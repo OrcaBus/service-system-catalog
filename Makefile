@@ -1,23 +1,26 @@
-.PHONY: test deep scan
+PNPM ?= pnpm
+
+.PHONY: check check-all fix fix-all install test
 
 check:
-	@pnpm audit
-	@pnpm prettier
-	@pnpm lint
-	@pre-commit run --all-files
+	@$(PNPM) audit
+	@$(PNPM) prettier
+	@$(PNPM) lint
+	@if command -v pre-commit >/dev/null 2>&1; then pre-commit run --all-files; else echo "pre-commit not installed; skipping pre-commit hooks"; fi
 
 check-all: check
-	@(cd app && make check)
+	@(cd app && $(MAKE) check PNPM="$(PNPM)")
 
 fix:
-	@pnpm prettier-fix
-	@pnpm lint-fix
+	@$(PNPM) prettier-fix
+	@$(PNPM) lint-fix
 
 fix-all: fix
-	@(cd app && make fix)
+	@(cd app && $(MAKE) fix PNPM="$(PNPM)")
 
 install:
-	@pnpm install --frozen-lockfile
+	@$(PNPM) install --frozen-lockfile
+	@if command -v pre-commit >/dev/null 2>&1; then pre-commit install; else echo "pre-commit not installed; skipping hook install"; fi
 
 test:
-	@pnpm test
+	@$(PNPM) test

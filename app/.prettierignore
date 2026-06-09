@@ -1,0 +1,3 @@
+dist/**
+node_modules/**
+src/generated/system-catalog.openapi.d.ts

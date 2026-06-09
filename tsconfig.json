@@ -3,9 +3,7 @@
     "noEmit": true,
     "target": "ES2020",
     "module": "commonjs",
-    "lib": [
-      "es2020"
-    ],
+    "lib": ["es2020"],
     "declaration": true,
     "esModuleInterop": true,
     "strict": true,
@@ -22,13 +20,9 @@
     "experimentalDecorators": true,
     "resolveJsonModule": true,
     "strictPropertyInitialization": false,
-    "typeRoots": [
-      "./node_modules/@types"
-    ],
+    "typeRoots": ["./node_modules/@types"],
+    "types": ["jest", "node"],
     "skipLibCheck": true
   },
-  "exclude": [
-    "node_modules",
-    "cdk.out",
-  ]
+  "exclude": ["app", "node_modules", "cdk.out"]
 }

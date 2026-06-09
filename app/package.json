@@ -1,0 +1,49 @@
+{
+  "name": "system-catalog-app",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsx watch src/server.ts",
+    "start": "tsx src/server.ts",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:fix": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "openapi:generate": "openapi-typescript --default-non-nullable false schema/openapi.yaml -o src/generated/system-catalog.openapi.d.ts",
+    "openapi:check": "node scripts/check-openapi.mjs",
+    "wait:dynamodb": "tsx scripts/wait-dynamodb.ts",
+    "migrate": "tsx scripts/migrate.ts",
+    "seed": "tsx scripts/seed.ts",
+    "reset": "tsx scripts/reset.ts"
+  },
+  "packageManager": "pnpm@11.5.2+sha512.71c631e382066efc25625d5cf029075de07b61b37f6e27350fbd84b1bda5864c8c1967adc280776b45c30a715c0359a3be08fef42d5bb09e2b99029979692916",
+  "engines": {
+    "node": ">=24"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.1064.0",
+    "@aws-sdk/lib-dynamodb": "^3.1064.0",
+    "hono": "^4.12.25",
+    "yaml": "^2.9.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@aws-sdk/util-dynamodb": "^3.996.4",
+    "@eslint/js": "^10.0.1",
+    "@hono/node-server": "^2.0.4",
+    "@types/node": "^25.9.2",
+    "eslint": "^10.4.1",
+    "globals": "^17.6.0",
+    "openapi-typescript": "^7.13.0",
+    "prettier": "^3.8.3",
+    "tsx": "^4.22.4",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.61.0",
+    "vitest": "^4.1.8"
+  }
+}

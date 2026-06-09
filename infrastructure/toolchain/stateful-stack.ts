@@ -1,7 +1,9 @@
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { DeploymentStackPipeline } from '@orcabus/platform-cdk-constructs/deployment-stack-pipeline';
-import { getStackProps } from '../stage/config';
+import { getSystemCatalogStatefulStackProps } from '../stage/config';
+import { SystemCatalogStatefulStack } from '../stage/stateful-stack';
+import { node24PartialBuildSpec } from './build-spec';
 
 export class StatefulStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -9,18 +11,31 @@ export class StatefulStack extends cdk.Stack {
 
     new DeploymentStackPipeline(this, 'DeploymentPipeline', {
       githubBranch: 'main',
-      githubRepo: /** TODO: Replace with string. Example: */ 'service-microservice-manager',
-      stack: /** TODO: Replace with Stack (e.g. TheStateFULStack) */ this,
-      stackName: /** TODO: Replace with string. Example:  */ 'StatefulMicroserviceManager',
+      githubRepo: 'service-system-catalog',
+      excludedFilePaths: [
+        'app/**',
+        'docs/**',
+        'infrastructure/stage/stateless-stack.ts',
+        'infrastructure/toolchain/stateless-stack.ts',
+      ],
+      stack: SystemCatalogStatefulStack,
+      stackName: 'SystemCatalogStatefulStack',
       stackConfig: {
-        beta: getStackProps('BETA'),
-        gamma: getStackProps('GAMMA'),
-        prod: getStackProps('PROD'),
+        beta: getSystemCatalogStatefulStackProps('BETA'),
+        gamma: getSystemCatalogStatefulStackProps('GAMMA'),
+        prod: getSystemCatalogStatefulStackProps('PROD'),
       },
-      pipelineName: /** TODO: Replace with string. Example: */ 'OrcaBus-StatefulMicroservice',
+      pipelineName: 'OrcaBus-SystemCatalogStatefulStack',
       cdkSynthCmd: ['pnpm install --frozen-lockfile --ignore-scripts', 'pnpm cdk-stateful synth'],
+      synthBuildSpec: node24PartialBuildSpec(),
+      // No app tests for stateful stack.
       unitAppTestConfig: {
-        command: ['cd app && make install && make check && make test'],
+        command: [],
+        partialBuildSpec: node24PartialBuildSpec(),
+      },
+      unitIacTestConfig: {
+        command: ['pnpm test'],
+        partialBuildSpec: node24PartialBuildSpec(),
       },
     });
   }
