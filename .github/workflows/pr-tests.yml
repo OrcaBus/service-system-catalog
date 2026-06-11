@@ -18,7 +18,18 @@ on:
     branches:
       - main
 
-permissions: read-all
+# Least privilege: these jobs only read the repo (checkout, install, test, secret scan).
+permissions:
+  contents: read
+
+# Cancel superseded in-progress runs for the same PR to save CI minutes.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# Single source of truth for the Node version used across all jobs.
+env:
+  NODE_VERSION: '24.x'
 
 # Actions Used (please keep this documented here as added)
 #  https://github.com/marketplace/actions/checkout
@@ -29,6 +40,7 @@ permissions: read-all
 jobs:
   pre-commit-lint-security:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     if: ${{ !github.event.pull_request.draft }}
     steps:
       - name: Checkout code
@@ -40,7 +52,7 @@ jobs:
 
       - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
-          node-version: '24.x'
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
 
       - run: corepack enable
@@ -66,9 +78,8 @@ jobs:
           extra_args: --debug --only-verified
 
       - name: Install dependencies
-        run: |
-          make install
-          (cd app && make install)
+        # Root frozen install covers the whole pnpm workspace (app/ included).
+        run: make install
 
       - name: Lint and code formatting
         run: |
@@ -76,6 +87,7 @@ jobs:
 
   test-iac:
     runs-on: ubuntu-22.04-arm
+    timeout-minutes: 15
     if: ${{ !github.event.pull_request.draft }}
     steps:
       - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
@@ -84,7 +96,7 @@ jobs:
 
       - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
-          node-version: '24.x'
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
 
       - run: corepack enable
@@ -95,6 +107,8 @@ jobs:
 
   test-app:
     runs-on: ubuntu-22.04-arm
+    # Heavier: spins up DynamoDB Local via docker compose, runs Vitest, tears down.
+    timeout-minutes: 20
     if: ${{ !github.event.pull_request.draft }}
     steps:
       - name: Checkout code
@@ -104,7 +118,7 @@ jobs:
 
       - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
-          node-version: '24.x'
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
 
       - run: corepack enable

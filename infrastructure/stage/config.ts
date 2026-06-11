@@ -32,7 +32,10 @@ export const getSystemCatalogStatefulStackProps = (
 
   return {
     tableName: `SystemCatalogTable-${stage}`,
-    pointInTimeRecoveryEnabled: isProd,
+    // Point-in-time recovery is enabled in every stage: it protects the catalog data,
+    // satisfies cdk-nag AwsSolutions-DDB3, and (unlike deletionProtection/removalPolicy)
+    // does not block tearing down non-prod stacks.
+    pointInTimeRecoveryEnabled: true,
     deletionProtection: isProd,
     removalPolicy: isProd ? RemovalPolicy.RETAIN : RemovalPolicy.DESTROY,
   };
