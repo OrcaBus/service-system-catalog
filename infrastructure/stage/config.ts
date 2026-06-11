@@ -32,6 +32,7 @@ export const getSystemCatalogStatefulStackProps = (
 
   return {
     tableName: `SystemCatalogTable-${stage}`,
+    pointInTimeRecoveryEnabled: isProd,
     deletionProtection: isProd,
     removalPolicy: isProd ? RemovalPolicy.RETAIN : RemovalPolicy.DESTROY,
   };

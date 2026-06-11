@@ -5,6 +5,7 @@ import { GitStack } from '@orcabus/platform-cdk-constructs/deployment-stack-pipe
 
 export interface SystemCatalogStatefulStackProps extends StackProps {
   tableName: string;
+  pointInTimeRecoveryEnabled?: boolean;
   removalPolicy?: RemovalPolicy;
   deletionProtection?: boolean;
 }
@@ -35,7 +36,7 @@ export class SystemCatalogStatefulStack extends GitStack {
       sortKey: { name: 'SK', type: AttributeType.STRING },
       billingMode: BillingMode.PAY_PER_REQUEST,
       pointInTimeRecoverySpecification: {
-        pointInTimeRecoveryEnabled: true,
+        pointInTimeRecoveryEnabled: props.pointInTimeRecoveryEnabled ?? false,
       },
       deletionProtection: props.deletionProtection ?? false,
       removalPolicy: props.removalPolicy ?? RemovalPolicy.DESTROY,
