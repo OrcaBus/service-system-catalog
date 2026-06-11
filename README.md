@@ -67,8 +67,8 @@ The CDK entrypoint is `bin/deploy.ts`.
 ```bash
 pnpm cdk-stateful ls
 pnpm cdk-stateless ls
-pnpm cdk-stateful deploy -e OrcaBusStatefulSystemCatalogStack
-pnpm cdk-stateless deploy -e OrcaBusStatelessSystemCatalogStack
+pnpm cdk-stateful deploy -e OrcaBusSystemCatalogStatefulStack
+pnpm cdk-stateless deploy -e OrcaBusSystemCatalogStatelessStack
 ```
 
 Stage configuration is in `infrastructure/stage/config.ts`. Table names remain deterministic:
