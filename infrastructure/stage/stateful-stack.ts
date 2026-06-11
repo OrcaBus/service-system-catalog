@@ -1,6 +1,7 @@
 import { Construct } from 'constructs';
-import { Stack, StackProps, RemovalPolicy } from 'aws-cdk-lib';
+import { StackProps, RemovalPolicy } from 'aws-cdk-lib';
 import { AttributeType, BillingMode, ProjectionType, Table } from 'aws-cdk-lib/aws-dynamodb';
+import { GitStack } from '@orcabus/platform-cdk-constructs/deployment-stack-pipeline';
 
 export interface SystemCatalogStatefulStackProps extends StackProps {
   tableName: string;
@@ -24,7 +25,7 @@ const MAP_SUMMARY_ATTRIBUTES = [
   'edgeCount',
 ];
 
-export class SystemCatalogStatefulStack extends Stack {
+export class SystemCatalogStatefulStack extends GitStack {
   constructor(scope: Construct, id: string, props: SystemCatalogStatefulStackProps) {
     super(scope, id, props);
 

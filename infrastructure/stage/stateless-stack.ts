@@ -1,6 +1,6 @@
 import * as path from 'path';
 import { Construct } from 'constructs';
-import { Duration, RemovalPolicy, Stack, StackProps } from 'aws-cdk-lib';
+import { Duration, RemovalPolicy, StackProps } from 'aws-cdk-lib';
 import { Architecture, Runtime } from 'aws-cdk-lib/aws-lambda';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { PolicyStatement, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
@@ -19,6 +19,7 @@ import {
   HttpRoute,
   HttpRouteKey,
 } from 'aws-cdk-lib/aws-apigatewayv2';
+import { GitStack } from '@orcabus/platform-cdk-constructs/deployment-stack-pipeline';
 
 export interface SystemCatalogStatelessStackProps extends StackProps {
   lambdaSecurityGroupName: string;
@@ -27,7 +28,7 @@ export interface SystemCatalogStatelessStackProps extends StackProps {
   dynamoDBTableName: string;
 }
 
-export class SystemCatalogStatelessStack extends Stack {
+export class SystemCatalogStatelessStack extends GitStack {
   private readonly lambdaEnv: Record<string, string>;
   private readonly lambdaRole: Role;
   private readonly lambdaSG: ISecurityGroup;
