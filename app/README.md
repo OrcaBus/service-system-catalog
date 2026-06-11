@@ -54,3 +54,10 @@ The app imports generated TypeScript types from `src/generated/system-catalog.op
 pnpm openapi:generate
 pnpm openapi:check
 ```
+
+## Node positions / layout
+
+A map node's `position` (`{ x, y }`) is **optional**. When a node has no stored position the UI
+computes the diagram layout automatically (dagre, left-to-right) from the graph edges; a stored
+position is a manual override (e.g. after a user drags a node). Seed data ships without positions
+so freshly seeded maps render via auto-layout.

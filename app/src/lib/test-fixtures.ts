@@ -27,7 +27,7 @@ export function createFixtureMap(overrides: Partial<MapFull> = {}): MapFull {
         inputEvents: [],
         outputEvents: [],
         tags: {},
-        position: { x: 0, y: 0 },
+        // No position: exercises the optional/auto-layout path.
       },
       {
         nodeId: 'target',

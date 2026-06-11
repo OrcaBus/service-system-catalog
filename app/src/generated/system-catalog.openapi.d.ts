@@ -257,7 +257,12 @@ export interface components {
             tags: {
                 [key: string]: string;
             };
-            position: components["schemas"]["Position"];
+            /**
+             * @description Optional, client-curated canvas position. When omitted, the client computes
+             *     a layout automatically (dagre) from the graph edges. A stored position acts as
+             *     a manual override (e.g. after dragging a node).
+             */
+            position?: components["schemas"]["Position"];
         };
         ResourceMapNode: components["schemas"]["MapNodeBase"] & {
             /** @enum {string} */

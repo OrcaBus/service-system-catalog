@@ -583,7 +583,6 @@ components:
         - inputEvents
         - outputEvents
         - tags
-        - position
       properties:
         nodeId:
           type: string
@@ -624,7 +623,12 @@ components:
             maxRetries: '2'
             timeout: '8h'
         position:
-          $ref: '#/components/schemas/Position'
+          allOf:
+            - $ref: '#/components/schemas/Position'
+          description: |
+            Optional, client-curated canvas position. When omitted, the client computes
+            a layout automatically (dagre) from the graph edges. A stored position acts as
+            a manual override (e.g. after dragging a node).
 
     ResourceMapNode:
       allOf:

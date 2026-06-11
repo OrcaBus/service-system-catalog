@@ -216,4 +216,35 @@ describe('app routes', () => {
     expect(payload.version).toBe(2);
     expect(payload.nodes.find((node) => node.nodeId === 'target')?.groupIds).toEqual(['SERVICES']);
   });
+
+  it('accepts nodes without a position and preserves a stored position override', async () => {
+    const app = createTestApp();
+    const fixture = createFixtureMap();
+
+    const response = await app.request('/api/v1/maps/catalog-map/content', {
+      method: 'PUT',
+      headers: {
+        'content-type': 'application/json',
+        'If-Match': '"1"',
+      },
+      body: JSON.stringify({
+        // fixture `source` omits position (auto-layout); `target` keeps { x: 200, y: 120 }.
+        nodes: fixture.nodes,
+        groups: [],
+        edges: fixture.edges,
+        engineColors: fixture.engineColors,
+      }),
+    });
+
+    const payload = (await response.json()) as {
+      nodes: Array<{ nodeId: string; position?: { x: number; y: number } }>;
+    };
+
+    expect(response.status).toBe(200);
+    expect(payload.nodes.find((node) => node.nodeId === 'source')?.position).toBeUndefined();
+    expect(payload.nodes.find((node) => node.nodeId === 'target')?.position).toEqual({
+      x: 200,
+      y: 120,
+    });
+  });
 });

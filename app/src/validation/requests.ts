@@ -63,7 +63,8 @@ const mapNodeBaseSchema = z.object({
   inputEvents: z.array(eventDefSchema),
   outputEvents: z.array(eventDefSchema),
   tags: z.record(z.string(), z.string()),
-  position: positionSchema,
+  // Optional: clients auto-layout when absent (dagre); a stored value is a manual override.
+  position: positionSchema.optional(),
 });
 
 const mapNodeSchema = z.discriminatedUnion('nodeType', [
