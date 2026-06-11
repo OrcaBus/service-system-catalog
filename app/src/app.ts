@@ -1,15 +1,41 @@
 import { Hono } from 'hono';
+import { cors } from 'hono/cors';
 import { AppError, PreconditionFailedError, ValidationError } from './lib/errors';
 import { createHealthRoutes } from './routes/health';
 import { createMapsRoutes, type MapsRouteDependencies } from './routes/maps';
 import { createSchemaRoutes } from './routes/schema';
 
-export type AppDependencies = MapsRouteDependencies;
+export type AppDependencies = MapsRouteDependencies & {
+  corsAllowAllOrigins: boolean;
+  corsAllowedOrigins: string[];
+};
 
 type AppErrorStatus = 400 | 404 | 409 | 412;
 
+const corsAllowMethods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'];
+const corsAllowHeaders = ['Authorization', 'Content-Type', 'If-Match'];
+const corsExposeHeaders = ['ETag'];
+
+function createCorsOriginResolver(allowedOrigins: readonly string[]) {
+  const allowedOriginSet = new Set(allowedOrigins);
+  return (origin: string) => (allowedOriginSet.has(origin) ? origin : null);
+}
+
 export function createApp(dependencies: AppDependencies): Hono {
   const app = new Hono();
+
+  app.use(
+    '/api/*',
+    cors({
+      origin: dependencies.corsAllowAllOrigins
+        ? '*'
+        : createCorsOriginResolver(dependencies.corsAllowedOrigins),
+      allowMethods: corsAllowMethods,
+      allowHeaders: corsAllowHeaders,
+      exposeHeaders: corsExposeHeaders,
+      maxAge: 86400,
+    })
+  );
 
   app.onError((error, c) => {
     if (error instanceof AppError) {

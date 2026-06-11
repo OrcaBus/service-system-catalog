@@ -70,6 +70,7 @@ export class SystemCatalogStatelessStack extends Stack {
       DYNAMODB_TABLE_NAME: props.dynamoDBTableName,
       DEFAULT_ACTOR: 'system-catalog@orcabus',
       OPENAPI_SPEC_PATH: '/var/task/schema/openapi.yaml',
+      CORS_ALLOW_ORIGINS: props.apiGatewayCognitoProps.corsAllowOrigins.join(','),
     };
 
     this.createApiHandlerAndIntegration(props);

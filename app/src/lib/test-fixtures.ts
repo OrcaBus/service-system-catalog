@@ -18,10 +18,10 @@ export function createFixtureMap(overrides: Partial<MapFull> = {}): MapFull {
     nodes: [
       {
         nodeId: 'source',
-        nodeType: 'pipeline',
+        nodeType: 'workflow',
+        workflowEngine: 'ICA',
         label: 'Source',
         version: 'v1.0.0',
-        engine: 'ICA',
         description: 'Source node',
         groupIds: [],
         inputEvents: [],
@@ -31,10 +31,10 @@ export function createFixtureMap(overrides: Partial<MapFull> = {}): MapFull {
       },
       {
         nodeId: 'target',
-        nodeType: 'rest_api_service',
+        nodeType: 'resource',
+        resourceType: 'rest_api_service',
         label: 'Target',
         version: 'v2.0.0',
-        engine: 'AWS',
         description: 'Target node',
         groupIds: [],
         inputEvents: [],

@@ -36,16 +36,28 @@ export class DynamoDbSystemCatalogRepository implements SystemCatalogRepository 
   ) {}
 
   async listMaps(params: ListMapsParams): Promise<ListMapsResult> {
+    const filterClauses: string[] = [];
+    const expressionAttributeValues: Record<string, unknown> = {
+      ':partitionKey': params.status ? `STATUS#${params.status}` : MAP_GSI_PARTITION_KEY,
+    };
+
+    if (!params.includeDeleted) {
+      filterClauses.push('isDeleted = :notDeleted');
+      expressionAttributeValues[':notDeleted'] = false;
+    }
+
+    if (params.userEmail) {
+      filterClauses.push('(createdBy = :userEmail OR updatedBy = :userEmail)');
+      expressionAttributeValues[':userEmail'] = params.userEmail;
+    }
+
     const response = await this.client.send(
       new QueryCommand({
         TableName: this.tableName,
         IndexName: params.status ? 'StatusIndex' : 'MapsByUpdatedAt',
         KeyConditionExpression: params.status ? 'GSI2PK = :partitionKey' : 'GSI1PK = :partitionKey',
-        ExpressionAttributeValues: {
-          ':partitionKey': params.status ? `STATUS#${params.status}` : MAP_GSI_PARTITION_KEY,
-          ':notDeleted': false,
-        },
-        FilterExpression: params.includeDeleted ? undefined : 'isDeleted = :notDeleted',
+        ExpressionAttributeValues: expressionAttributeValues,
+        FilterExpression: filterClauses.length > 0 ? filterClauses.join(' AND ') : undefined,
         Limit: params.limit,
         ScanIndexForward: false,
         ExclusiveStartKey: decodeCursor<Record<string, unknown>>(params.cursor),

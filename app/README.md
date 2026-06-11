@@ -43,6 +43,8 @@ The API listens on `http://localhost:8000` by default. Swagger UI is available a
 - `DYNAMODB_ENDPOINT`: optional; defaults to `http://127.0.0.1:8001` outside production and is omitted in production
 - `DEFAULT_ACTOR`: default `local.dev@umccr.org`
 - `OPENAPI_SPEC_PATH`: default `schema/openapi.yaml`
+- `CORS_ALLOW_ORIGINS`: comma-separated browser origins allowed to call the API; defaults to `http://localhost:3000,http://127.0.0.1:3000` outside production and no origins in production
+- `CORS_ALLOW_ALL_ORIGINS`: set to `true` to return `Access-Control-Allow-Origin: *`; only honored outside production
 
 ## OpenAPI Types
 

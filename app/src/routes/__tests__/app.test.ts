@@ -4,7 +4,7 @@ import { createFixtureHistory, createFixtureMap } from '../../lib/test-fixtures'
 import { InMemorySystemCatalogRepository } from '../../repositories/inMemorySystemCatalogRepository';
 import { SystemCatalogService } from '../../services/systemCatalogService';
 
-function createTestApp() {
+function createTestApp({ corsAllowAllOrigins = false }: { corsAllowAllOrigins?: boolean } = {}) {
   const map = createFixtureMap();
   const repository = new InMemorySystemCatalogRepository([map], [createFixtureHistory(map)]);
   const service = new SystemCatalogService(repository);
@@ -12,6 +12,8 @@ function createTestApp() {
   return createApp({
     service,
     getActor: () => 'route-test@umccr.org',
+    corsAllowAllOrigins,
+    corsAllowedOrigins: ['http://localhost:3000'],
   });
 }
 
@@ -59,6 +61,101 @@ describe('app routes', () => {
     });
     expect(getResponse.status).toBe(200);
     expect(getResponse.headers.get('etag')).toBe('"1"');
+  });
+
+  it('handles CORS preflight requests from configured frontend origins', async () => {
+    const app = createTestApp();
+
+    const response = await app.request('/api/v1/maps', {
+      method: 'OPTIONS',
+      headers: {
+        Origin: 'http://localhost:3000',
+        'Access-Control-Request-Method': 'GET',
+        'Access-Control-Request-Headers': 'Authorization',
+      },
+    });
+
+    expect(response.status).toBe(204);
+    expect(response.headers.get('access-control-allow-origin')).toBe('http://localhost:3000');
+    expect(response.headers.get('access-control-allow-headers')).toContain('Authorization');
+    expect(response.headers.get('access-control-allow-methods')).toContain('GET');
+  });
+
+  it('can allow any CORS origin when the development wildcard switch is enabled', async () => {
+    const app = createTestApp({ corsAllowAllOrigins: true });
+
+    const response = await app.request('/api/v1/maps', {
+      method: 'OPTIONS',
+      headers: {
+        Origin: 'http://localhost:5173',
+        'Access-Control-Request-Method': 'GET',
+        'Access-Control-Request-Headers': 'Authorization',
+      },
+    });
+
+    expect(response.status).toBe(204);
+    expect(response.headers.get('access-control-allow-origin')).toBe('*');
+  });
+
+  it('exposes ETag to configured frontend origins', async () => {
+    const app = createTestApp();
+
+    const response = await app.request('/api/v1/maps/catalog-map', {
+      headers: {
+        Origin: 'http://localhost:3000',
+      },
+    });
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get('access-control-allow-origin')).toBe('http://localhost:3000');
+    expect(response.headers.get('access-control-expose-headers')).toContain('ETag');
+  });
+
+  it('creates maps without optional engineColors', async () => {
+    const app = createTestApp();
+
+    const response = await app.request('/api/v1/maps', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        name: 'Minimal Map',
+      }),
+    });
+
+    const payload = (await response.json()) as {
+      mapId: string;
+      engineColors: Record<string, string>;
+    };
+
+    expect(response.status).toBe(201);
+    expect(payload.mapId).toBe('minimal-map');
+    expect(payload.engineColors).toEqual({});
+  });
+
+  it('rejects nodes without their discriminated node details', async () => {
+    const app = createTestApp();
+    const fixture = createFixtureMap();
+
+    const response = await app.request('/api/v1/maps/catalog-map/content', {
+      method: 'PUT',
+      headers: {
+        'content-type': 'application/json',
+        'If-Match': '"1"',
+      },
+      body: JSON.stringify({
+        nodes: [
+          {
+            ...fixture.nodes[0],
+            nodeType: 'workflow',
+            workflowEngine: undefined,
+          },
+        ],
+        groups: [],
+        edges: [],
+      }),
+    });
+
+    expect(response.status).toBe(400);
   });
 
   it('returns 412 when the version is stale', async () => {

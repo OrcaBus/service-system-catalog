@@ -3,6 +3,35 @@ import { ValidationError } from '../lib/errors';
 
 const mapStatusSchema = z.enum(['active', 'draft', 'archived']);
 const groupTypeSchema = z.enum(['infrastructure', 'ingestion', 'analysis', 'flows', 'service']);
+const resourceTypeSchema = z.enum([
+  'aws_lambda',
+  'aws_api_gateway',
+  'aws_sqs',
+  'aws_event_bridge',
+  'aws_s3',
+  'aws_sns',
+  'aws_step_function',
+  'aws_batch',
+  'aws_ecs',
+  'aws_eks',
+  'aws_dynamodb',
+  'aws_rds',
+  'rest_api_service',
+  'execution_service',
+  'external_service',
+  'other',
+]);
+const workflowEngineSchema = z.enum([
+  'ICA',
+  'SEQERA',
+  'AWS_BATCH',
+  'AWS_ECS',
+  'AWS_EKS',
+  'BASESPACE',
+  'PIERIAN',
+  'ON_PREM',
+  'OTHER',
+]);
 const edgeTypeSchema = z.enum([
   'trigger',
   'trigger_input',
@@ -13,22 +42,6 @@ const edgeTypeSchema = z.enum([
   'execution_request',
   'rest_call',
 ]);
-const nodeTypeSchema = z.enum([
-  'pipeline',
-  'aws_lambda',
-  'aws_eks',
-  'aws_step_function',
-  'aws_event_bridge',
-  'aws_batch',
-  'aws_s3',
-  'aws_sqs',
-  'aws_sns',
-  'external_service',
-  'ica_pipeline',
-  'rest_api_service',
-  'execution_service',
-]);
-
 const eventDefSchema = z.object({
   name: z.string().min(1),
   topic: z.string().optional(),
@@ -41,12 +54,10 @@ const positionSchema = z.object({
   y: z.number(),
 });
 
-const mapNodeSchema = z.object({
+const mapNodeBaseSchema = z.object({
   nodeId: z.string().min(1),
-  nodeType: nodeTypeSchema,
   label: z.string().min(1),
   version: z.string().min(1),
-  engine: z.string().min(1),
   description: z.string(),
   groupIds: z.array(z.string()),
   inputEvents: z.array(eventDefSchema),
@@ -54,6 +65,17 @@ const mapNodeSchema = z.object({
   tags: z.record(z.string(), z.string()),
   position: positionSchema,
 });
+
+const mapNodeSchema = z.discriminatedUnion('nodeType', [
+  mapNodeBaseSchema.extend({
+    nodeType: z.literal('resource'),
+    resourceType: resourceTypeSchema,
+  }),
+  mapNodeBaseSchema.extend({
+    nodeType: z.literal('workflow'),
+    workflowEngine: workflowEngineSchema,
+  }),
+]);
 
 const mapGroupSchema = z.object({
   groupId: z.string().min(1),
@@ -84,6 +106,7 @@ export const listMapsQuerySchema = z.object({
       value === undefined ? undefined : value === true || value === 'true' || value === '1',
     z.boolean().default(false)
   ),
+  userEmail: z.string().email().optional(),
 });
 
 export const mapIdParamsSchema = z.object({

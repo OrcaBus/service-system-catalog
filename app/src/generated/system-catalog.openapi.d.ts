@@ -181,7 +181,11 @@ export interface components {
         /** @enum {string} */
         MapStatus: "active" | "draft" | "archived";
         /** @enum {string} */
-        MapNodeType: "pipeline" | "aws_lambda" | "aws_eks" | "aws_step_function" | "aws_event_bridge" | "aws_batch" | "aws_s3" | "aws_sqs" | "aws_sns" | "external_service" | "ica_pipeline" | "rest_api_service" | "execution_service";
+        MapNodeType: "resource" | "workflow";
+        /** @enum {string} */
+        ResourceType: "aws_lambda" | "aws_api_gateway" | "aws_sqs" | "aws_event_bridge" | "aws_s3" | "aws_sns" | "aws_step_function" | "aws_batch" | "aws_ecs" | "aws_eks" | "aws_dynamodb" | "aws_rds" | "rest_api_service" | "execution_service" | "external_service" | "other";
+        /** @enum {string} */
+        WorkflowEngine: "ICA" | "SEQERA" | "AWS_BATCH" | "AWS_ECS" | "AWS_EKS" | "BASESPACE" | "PIERIAN" | "ON_PREM" | "OTHER";
         /** @enum {string} */
         MapEdgeType: "trigger" | "trigger_input" | "input_dependency" | "event_publish" | "event_subscribe" | "state_change" | "execution_request" | "rest_call";
         /** @enum {string} */
@@ -215,13 +219,12 @@ export interface components {
                 [key: string]: unknown;
             };
         };
-        MapNode: {
+        MapNodeBase: {
             /**
              * @description Unique within map, used as ReactFlow node ID
              * @example bcl-convert
              */
             nodeId: string;
-            nodeType: components["schemas"]["MapNodeType"];
             /**
              * @description Display label
              * @example BCL Convert
@@ -229,11 +232,6 @@ export interface components {
             label: string;
             /** @example v4.2.7 */
             version: string;
-            /**
-             * @description Execution engine / platform
-             * @example ICA
-             */
-            engine: string;
             /** @example Illumina BCL to FASTQ conversion pipeline */
             description: string;
             /**
@@ -261,6 +259,29 @@ export interface components {
             };
             position: components["schemas"]["Position"];
         };
+        ResourceMapNode: components["schemas"]["MapNodeBase"] & {
+            /** @enum {string} */
+            nodeType: "resource";
+            resourceType: components["schemas"]["ResourceType"];
+        } & {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            nodeType: "resource";
+        };
+        WorkflowMapNode: components["schemas"]["MapNodeBase"] & {
+            /** @enum {string} */
+            nodeType: "workflow";
+            workflowEngine: components["schemas"]["WorkflowEngine"];
+        } & {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            nodeType: "workflow";
+        };
+        MapNode: components["schemas"]["ResourceMapNode"] | components["schemas"]["WorkflowMapNode"];
         MapGroup: {
             /** @example WGS */
             groupId: string;
@@ -532,6 +553,8 @@ export interface components {
         Cursor: string;
         /** @description Include soft-deleted maps in results */
         IncludeDeleted: boolean;
+        /** @description Filter maps by user email (matches createdBy or updatedBy) */
+        UserEmail: string;
         /**
          * @description Current version of the map for optimistic concurrency control.
          *     Must match the version (ETag) returned by GET.
@@ -580,6 +603,8 @@ export interface operations {
                 cursor?: components["parameters"]["Cursor"];
                 /** @description Include soft-deleted maps in results */
                 includeDeleted?: components["parameters"]["IncludeDeleted"];
+                /** @description Filter maps by user email (matches createdBy or updatedBy) */
+                userEmail?: components["parameters"]["UserEmail"];
             };
             header?: never;
             path?: never;

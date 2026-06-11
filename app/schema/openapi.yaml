@@ -88,6 +88,7 @@ paths:
         - $ref: '#/components/parameters/Limit'
         - $ref: '#/components/parameters/Cursor'
         - $ref: '#/components/parameters/IncludeDeleted'
+        - $ref: '#/components/parameters/UserEmail'
       responses:
         '200':
           description: Paginated list of map summaries
@@ -401,6 +402,15 @@ components:
         default: false
       description: Include soft-deleted maps in results
 
+    UserEmail:
+      name: userEmail
+      in: query
+      required: false
+      schema:
+        type: string
+        format: email
+      description: Filter maps by user email (matches createdBy or updatedBy)
+
     IfMatch:
       name: If-Match
       in: header
@@ -459,20 +469,40 @@ components:
 
     MapNodeType:
       type: string
+      enum: [resource, workflow]
+
+    ResourceType:
+      type: string
       enum:
-        - pipeline
         - aws_lambda
-        - aws_eks
-        - aws_step_function
-        - aws_event_bridge
-        - aws_batch
-        - aws_s3
+        - aws_api_gateway
         - aws_sqs
+        - aws_event_bridge
+        - aws_s3
         - aws_sns
-        - external_service
-        - ica_pipeline
+        - aws_step_function
+        - aws_batch
+        - aws_ecs
+        - aws_eks
+        - aws_dynamodb
+        - aws_rds
         - rest_api_service
         - execution_service
+        - external_service
+        - other
+
+    WorkflowEngine:
+      type: string
+      enum:
+        - ICA
+        - SEQERA
+        - AWS_BATCH
+        - AWS_ECS
+        - AWS_EKS
+        - BASESPACE
+        - PIERIAN
+        - ON_PREM
+        - OTHER
 
     MapEdgeType:
       type: string
@@ -542,14 +572,12 @@ components:
           description: Example payload shape
 
     # ─ Core Domain Objects ────────────────────────────────────────────────
-    MapNode:
+    MapNodeBase:
       type: object
       required:
         - nodeId
-        - nodeType
         - label
         - version
-        - engine
         - description
         - groupIds
         - inputEvents
@@ -561,8 +589,6 @@ components:
           type: string
           description: Unique within map, used as ReactFlow node ID
           example: bcl-convert
-        nodeType:
-          $ref: '#/components/schemas/MapNodeType'
         label:
           type: string
           description: Display label
@@ -570,10 +596,6 @@ components:
         version:
           type: string
           example: v4.2.7
-        engine:
-          type: string
-          description: Execution engine / platform
-          example: ICA
         description:
           type: string
           example: Illumina BCL to FASTQ conversion pipeline
@@ -603,6 +625,40 @@ components:
             timeout: '8h'
         position:
           $ref: '#/components/schemas/Position'
+
+    ResourceMapNode:
+      allOf:
+        - $ref: '#/components/schemas/MapNodeBase'
+        - type: object
+          required: [nodeType, resourceType]
+          properties:
+            nodeType:
+              type: string
+              enum: [resource]
+            resourceType:
+              $ref: '#/components/schemas/ResourceType'
+
+    WorkflowMapNode:
+      allOf:
+        - $ref: '#/components/schemas/MapNodeBase'
+        - type: object
+          required: [nodeType, workflowEngine]
+          properties:
+            nodeType:
+              type: string
+              enum: [workflow]
+            workflowEngine:
+              $ref: '#/components/schemas/WorkflowEngine'
+
+    MapNode:
+      oneOf:
+        - $ref: '#/components/schemas/ResourceMapNode'
+        - $ref: '#/components/schemas/WorkflowMapNode'
+      discriminator:
+        propertyName: nodeType
+        mapping:
+          resource: '#/components/schemas/ResourceMapNode'
+          workflow: '#/components/schemas/WorkflowMapNode'
 
     MapGroup:
       type: object

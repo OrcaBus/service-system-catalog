@@ -3,13 +3,86 @@ import type {
   MapFull,
   MapGroup,
   MapNode,
+  ResourceType,
   SaveMapContentRequest,
+  WorkflowEngine,
 } from '../models/systemCatalog';
 import { ValidationError } from './errors';
 
+type LegacyNodeType =
+  | 'pipeline'
+  | 'aws_lambda'
+  | 'aws_eks'
+  | 'aws_step_function'
+  | 'aws_event_bridge'
+  | 'aws_batch'
+  | 'aws_s3'
+  | 'aws_sqs'
+  | 'aws_sns'
+  | 'external_service'
+  | 'ica_pipeline'
+  | 'rest_api_service'
+  | 'execution_service';
+
+type NodeLike = Omit<MapNode, 'nodeType'> & {
+  nodeType: MapNode['nodeType'] | LegacyNodeType | string;
+  engine?: string;
+  resourceType?: ResourceType;
+  workflowEngine?: WorkflowEngine | string;
+};
+
+const RESOURCE_TYPES = new Set<ResourceType>([
+  'aws_lambda',
+  'aws_api_gateway',
+  'aws_sqs',
+  'aws_event_bridge',
+  'aws_s3',
+  'aws_sns',
+  'aws_step_function',
+  'aws_batch',
+  'aws_ecs',
+  'aws_eks',
+  'aws_dynamodb',
+  'aws_rds',
+  'rest_api_service',
+  'execution_service',
+  'external_service',
+  'other',
+]);
+
+const WORKFLOW_ENGINES = new Set<WorkflowEngine>([
+  'ICA',
+  'SEQERA',
+  'AWS_BATCH',
+  'AWS_ECS',
+  'AWS_EKS',
+  'BASESPACE',
+  'PIERIAN',
+  'ON_PREM',
+  'OTHER',
+]);
+
+const LEGACY_RESOURCE_TYPE_MAP: Record<string, ResourceType> = {
+  aws_lambda: 'aws_lambda',
+  aws_eks: 'aws_eks',
+  aws_step_function: 'aws_step_function',
+  aws_event_bridge: 'aws_event_bridge',
+  aws_batch: 'aws_batch',
+  aws_s3: 'aws_s3',
+  aws_sqs: 'aws_sqs',
+  aws_sns: 'aws_sns',
+  external_service: 'external_service',
+  rest_api_service: 'rest_api_service',
+  execution_service: 'execution_service',
+};
+
+const LEGACY_WORKFLOW_NODE_TYPES = new Set(['pipeline', 'ica_pipeline']);
+
 export function normalizeMap(map: MapFull): MapFull {
+  const normalizedInputNodes = (map.nodes as NodeLike[]).map(normalizeNode);
+
   assertUniqueIds(
-    map.nodes.map((node) => node.nodeId),
+    normalizedInputNodes.map((node) => node.nodeId),
     'nodes'
   );
   assertUniqueIds(
@@ -21,7 +94,7 @@ export function normalizeMap(map: MapFull): MapFull {
     'edges'
   );
 
-  const validNodeIds = new Set(map.nodes.map((node) => node.nodeId));
+  const validNodeIds = new Set(normalizedInputNodes.map((node) => node.nodeId));
   const normalizedGroups = map.groups.map((group) => normalizeGroup(group, validNodeIds));
   const memberships = new Map<string, string[]>();
 
@@ -42,7 +115,7 @@ export function normalizeMap(map: MapFull): MapFull {
     }
   });
 
-  const normalizedNodes = map.nodes.map((node) => ({
+  const normalizedNodes = normalizedInputNodes.map((node) => ({
     ...node,
     groupIds: memberships.get(node.nodeId) ?? [],
   }));
@@ -64,6 +137,62 @@ export function mergeMapContent(currentMap: MapFull, content: SaveMapContentRequ
     edges: content.edges,
     engineColors: content.engineColors ?? currentMap.engineColors,
   });
+}
+
+function normalizeNode(node: NodeLike): MapNode {
+  const { engine: _engine, resourceType, workflowEngine, ...baseNode } = node;
+
+  if (baseNode.nodeType === 'resource') {
+    return {
+      ...baseNode,
+      nodeType: 'resource',
+      resourceType: normalizeResourceType(resourceType ?? _engine ?? node.nodeType),
+    };
+  }
+
+  if (baseNode.nodeType === 'workflow') {
+    return {
+      ...baseNode,
+      nodeType: 'workflow',
+      workflowEngine: normalizeWorkflowEngine(workflowEngine ?? _engine),
+    };
+  }
+
+  if (LEGACY_WORKFLOW_NODE_TYPES.has(baseNode.nodeType)) {
+    return {
+      ...baseNode,
+      nodeType: 'workflow',
+      workflowEngine: normalizeWorkflowEngine(workflowEngine ?? _engine),
+    };
+  }
+
+  return {
+    ...baseNode,
+    nodeType: 'resource',
+    resourceType: normalizeResourceType(resourceType ?? baseNode.nodeType),
+  };
+}
+
+function normalizeResourceType(value: unknown): ResourceType {
+  if (typeof value === 'string') {
+    const mapped = LEGACY_RESOURCE_TYPE_MAP[value] ?? value;
+    if (RESOURCE_TYPES.has(mapped as ResourceType)) {
+      return mapped as ResourceType;
+    }
+  }
+
+  return 'other';
+}
+
+function normalizeWorkflowEngine(value: unknown): WorkflowEngine {
+  if (typeof value === 'string') {
+    const normalized = value.trim().toUpperCase().replace(/[- ]+/g, '_');
+    if (WORKFLOW_ENGINES.has(normalized as WorkflowEngine)) {
+      return normalized as WorkflowEngine;
+    }
+  }
+
+  return 'OTHER';
 }
 
 function normalizeGroup(group: MapGroup, validNodeIds: Set<string>): MapGroup {
@@ -101,7 +230,7 @@ function assertUniqueIds(ids: string[], path: string): void {
 }
 
 export function cloneMap(map: MapFull): MapFull {
-  return structuredClone(map);
+  return normalizeMap(structuredClone(map));
 }
 
 export function cloneEdges(edges: MapEdge[]): MapEdge[] {

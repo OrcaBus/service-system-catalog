@@ -12,5 +12,7 @@ export function createRuntimeApp(env: AppEnv = getEnv()) {
   return createApp({
     service: new SystemCatalogService(repository),
     getActor: () => env.DEFAULT_ACTOR,
+    corsAllowAllOrigins: env.CORS_ALLOW_ALL_ORIGINS,
+    corsAllowedOrigins: env.CORS_ALLOW_ORIGINS,
   });
 }

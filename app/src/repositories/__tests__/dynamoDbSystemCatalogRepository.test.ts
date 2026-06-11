@@ -202,6 +202,9 @@ describe('DynamoDbSystemCatalogRepository integration', () => {
 
     expect(read.mapId).toBe(legacyMap.mapId);
     expect(read.version).toBe(1);
+    expect(read.nodes[0]).toMatchObject({ nodeType: 'workflow', workflowEngine: 'ICA' });
+    expect(read.nodes[1]).toMatchObject({ nodeType: 'resource', resourceType: 'rest_api_service' });
+    expect(read.nodes[0]).not.toHaveProperty('engine');
     expect(read).not.toHaveProperty('schemaVersion');
   });
 });

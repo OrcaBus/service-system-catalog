@@ -18,6 +18,8 @@ export const getSystemCatalogStatelessStackProps = (
       ...getDefaultApiGatewayConfiguration(stage),
       apiName: 'SystemCatalogApi',
       customDomainNamePrefix: 'system-catalog',
+      corsAllowHeaders: ['if-match'],
+      corsExposeHeaders: ['ETag'],
     },
     dynamoDBTableName: `SystemCatalogTable-${stage}`,
   };

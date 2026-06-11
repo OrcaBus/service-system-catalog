@@ -27,6 +27,7 @@ export function createMapsRoutes(dependencies: MapsRouteDependencies): Hono {
         limit: c.req.query('limit'),
         cursor: c.req.query('cursor'),
         includeDeleted: c.req.query('includeDeleted'),
+        userEmail: c.req.query('userEmail'),
       })
     );
 

@@ -33,6 +33,11 @@ export class InMemorySystemCatalogRepository implements SystemCatalogRepository 
     const filtered = [...this.maps.values()]
       .filter((map) => (params.includeDeleted ? true : !map.isDeleted))
       .filter((map) => (params.status ? map.status === params.status : true))
+      .filter((map) =>
+        params.userEmail
+          ? map.createdBy === params.userEmail || map.updatedBy === params.userEmail
+          : true
+      )
       .sort((left, right) => right.updatedAt.localeCompare(left.updatedAt));
 
     const page = filtered.slice(offset, offset + params.limit);

@@ -2,6 +2,8 @@ import type { components } from '../generated/system-catalog.openapi.d.ts';
 
 export type MapStatus = components['schemas']['MapStatus'];
 export type MapNodeType = components['schemas']['MapNodeType'];
+export type ResourceType = components['schemas']['ResourceType'];
+export type WorkflowEngine = components['schemas']['WorkflowEngine'];
 export type MapEdgeType = components['schemas']['MapEdgeType'];
 export type GroupType = components['schemas']['GroupType'];
 export type HistoryChangeType = components['schemas']['HistoryChangeType'];
@@ -31,6 +33,7 @@ export type ListMapsParams = {
   limit: number;
   cursor?: string;
   includeDeleted: boolean;
+  userEmail?: string;
 };
 
 export type ListHistoryParams = {

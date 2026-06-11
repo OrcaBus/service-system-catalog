@@ -210,6 +210,7 @@ describe('system-catalog-stateless-stack', () => {
           DYNAMODB_TABLE_NAME: 'SystemCatalogTable-BETA',
           DEFAULT_ACTOR: 'system-catalog@orcabus',
           OPENAPI_SPEC_PATH: '/var/task/schema/openapi.yaml',
+          CORS_ALLOW_ORIGINS: 'https://example.test',
         }),
       },
     });
