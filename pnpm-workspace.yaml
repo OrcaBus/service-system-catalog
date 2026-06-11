@@ -5,7 +5,11 @@ allowBuilds:
   esbuild: false
   unrs-resolver: false
 minimumReleaseAgeExclude:
-  - '@orcabus/platform-cdk-constructs@1.6.2'
+  # First-party UMCCR scope: trusted, frequently bumped, and exempt from the
+  # newly-published-package age gate. A scope glob matches every version, so new
+  # releases don't trip CI (unlike pinned name@version entries, which also don't
+  # reliably match scoped packages).
+  - '@orcabus/*'
   - '@aws-sdk/client-dynamodb@3.1064.0'
   - '@aws-sdk/core@3.974.19'
   - '@aws-sdk/credential-provider-env@3.972.45'
@@ -38,4 +42,3 @@ minimumReleaseAgeExclude:
   - '@typescript-eslint/visitor-keys@8.61.0'
   - hono@4.12.25
   - typescript-eslint@8.61.0
-  - '@orcabus/platform-cdk-constructs@1.7.1'
