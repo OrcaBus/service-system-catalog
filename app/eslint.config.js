@@ -22,6 +22,10 @@ export default tseslint.config(
   {
     files: ['**/*.ts'],
     languageOptions: {
+      parserOptions: {
+        tsconfigRootDir: import.meta.dirname,
+        project: './tsconfig.json',
+      },
       globals: {
         ...globals.node,
       },
