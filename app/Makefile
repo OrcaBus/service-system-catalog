@@ -44,3 +44,21 @@ test:
 fix:
 	@$(PNPM) format:fix
 	@$(PNPM) lint:fix
+
+# Help command
+.PHONY: help
+help:
+	@echo "Available commands:"
+	@echo "  install          Install dependencies"
+	@echo "  up               Start Docker containers"
+	@echo "  down             Stop Docker containers"
+	@echo "  clean            Stop and remove Docker containers"
+	@echo "  wait-dynamodb    Wait for DynamoDB to be ready"
+	@echo "  migrate          Run database migrations"
+	@echo "  seed             Seed the database"
+	@echo "  reset            Reset the database"
+	@echo "  start            Start the application"
+	@echo "  dev              Start the application in development mode"
+	@echo "  check            Run code checks (lint, format, type-check)"
+	@echo "  test             Run tests"
+	@echo "  fix              Fix code formatting and linting issues"

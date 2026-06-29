@@ -24,16 +24,19 @@ describe('app routes', () => {
     const rootResponse = await app.request('/');
     const healthResponse = await app.request('/health');
     const schemaResponse = await app.request('http://localhost:8000/schema/openapi.json');
-    const docsResponse = await app.request('/schema/swagger-ui');
+    const docsRedirectResponse = await app.request('/schema/swagger-ui');
+    const docsResponse = await app.request('/schema/swagger-ui/');
 
     expect(rootResponse.status).toBe(302);
-    expect(rootResponse.headers.get('location')).toBe('/schema/swagger-ui');
+    expect(rootResponse.headers.get('location')).toBe('/schema/swagger-ui/');
     expect(healthResponse.status).toBe(200);
     expect(await healthResponse.json()).toEqual({ status: 'ok' });
     expect(schemaResponse.status).toBe(200);
     expect(
       ((await schemaResponse.json()) as { servers?: Array<{ url: string }> }).servers?.[0]?.url
     ).toBe('http://localhost:8000');
+    expect(docsRedirectResponse.status).toBe(301);
+    expect(docsRedirectResponse.headers.get('location')).toBe('/schema/swagger-ui/');
     expect(docsResponse.status).toBe(200);
     expect(await docsResponse.text()).toContain('SwaggerUIBundle');
   });

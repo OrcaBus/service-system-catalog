@@ -58,7 +58,7 @@ make seed
 make dev
 ```
 
-The local API defaults to `http://localhost:8000`; Swagger UI is at `/schema/swagger-ui`.
+The local API defaults to `http://localhost:8000`; Swagger UI is at `/schema/swagger-ui/`.
 
 ## Deployment
 

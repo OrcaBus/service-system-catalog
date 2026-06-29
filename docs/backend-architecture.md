@@ -50,4 +50,4 @@ make dev
 - Generated types: `app/src/generated/system-catalog.openapi.d.ts`
 - Check drift: `cd app && pnpm openapi:check`
 
-The Lambda bundle includes the OpenAPI YAML so `/schema/openapi.yaml`, `/schema/openapi.json`, and `/schema/swagger-ui` work after deployment.
+The Lambda bundle includes the OpenAPI YAML so `/schema/openapi.yaml`, `/schema/openapi.json`, and `/schema/swagger-ui/` work after deployment.

@@ -1,6 +1,6 @@
 PNPM ?= pnpm
 
-.PHONY: check check-all fix fix-all install test
+.PHONY: check check-all fix fix-all install test audit-fix
 
 check:
 	@$(PNPM) audit
@@ -14,6 +14,9 @@ check-all: check
 fix:
 	@$(PNPM) prettier-fix
 	@$(PNPM) lint-fix
+
+audit-fix:
+	@$(PNPM) audit --fix=override
 
 fix-all: fix
 	@(cd app && $(MAKE) fix PNPM="$(PNPM)")

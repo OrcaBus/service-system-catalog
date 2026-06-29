@@ -35,7 +35,7 @@ make seed
 make dev
 ```
 
-Open `http://localhost:8000/schema/swagger-ui` to inspect the API.
+Open `http://localhost:8000/schema/swagger-ui/` to inspect the API.
 
 ## Deployment Shape
 

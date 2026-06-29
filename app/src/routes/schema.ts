@@ -32,6 +32,10 @@ export function createSchemaRoutes(): Hono {
   });
 
   app.get('/schema/swagger-ui', (c) => {
+    return c.redirect('/schema/swagger-ui/', 301);
+  });
+
+  app.get('/schema/swagger-ui/', (c) => {
     return c.html(getSwaggerUiHtml());
   });
 

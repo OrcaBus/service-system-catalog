@@ -82,7 +82,7 @@ export function createApp(dependencies: AppDependencies): Hono {
     );
   });
 
-  app.get('/', (c) => c.redirect('/schema/swagger-ui'));
+  app.get('/', (c) => c.redirect('/schema/swagger-ui/'));
   app.route('/', createHealthRoutes());
   app.route('/', createSchemaRoutes());
   app.route('/api/v1/maps', createMapsRoutes(dependencies));

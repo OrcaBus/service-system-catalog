@@ -20,30 +20,30 @@
     "organization": true
   },
   "license": "MIT",
-  "packageManager": "pnpm@11.5.2+sha512.71c631e382066efc25625d5cf029075de07b61b37f6e27350fbd84b1bda5864c8c1967adc280776b45c30a715c0359a3be08fef42d5bb09e2b99029979692916",
+  "packageManager": "pnpm@11.9.0+sha512.bd682d5d03fe525ef7c9fd6780c6884d1e756ac4c9c9fe00c538782824310dcf90e3ddc4f53835f06dfaebd5085e41855e0bcbb3b60de2ac5bbab89e5036f03b",
   "engines": {
     "node": ">=24"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/jest": "^30.0.0",
-    "@types/node": "^25.9.1",
-    "aws-cdk": "^2.1126.0",
-    "cdk-nag": "^2.38.2",
-    "esbuild": "^0.28.0",
-    "eslint": "^10.4.1",
-    "globals": "^17.6.0",
+    "@types/node": "^26.0.1",
+    "aws-cdk": "^2.1128.1",
+    "cdk-nag": "^3.0.1",
+    "esbuild": "^0.28.1",
+    "eslint": "^10.6.0",
+    "globals": "^17.7.0",
     "jest": "^30.4.2",
-    "prettier": "^3.8.3",
+    "prettier": "^3.9.1",
     "test-js": "^0.0.4",
     "ts-jest": "^29.4.11",
     "ts-node": "^10.9.2",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.61.0"
+    "typescript-eslint": "^8.62.0"
   },
   "dependencies": {
-    "@orcabus/platform-cdk-constructs": "1.7.1",
-    "aws-cdk-lib": "^2.258.1",
+    "@orcabus/platform-cdk-constructs": "1.8.0",
+    "aws-cdk-lib": "^2.260.0",
     "constructs": "^10.6.0"
   }
 }

@@ -33,7 +33,7 @@ make seed
 make dev
 ```
 
-The API listens on `http://localhost:8000` by default. Swagger UI is available at `/schema/swagger-ui`.
+The API listens on `http://localhost:8000` by default. Swagger UI is available at `/schema/swagger-ui/`.
 
 ## Environment
 
