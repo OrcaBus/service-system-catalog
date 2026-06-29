@@ -21,6 +21,9 @@ importers:
         specifier: ^10.6.0
         version: 10.6.0
     devDependencies:
+      '@aws-cdk/cloud-assembly-api':
+        specifier: ^2.2.6
+        version: 2.2.6(@aws-cdk/cloud-assembly-schema@54.5.0)
       '@eslint/js':
         specifier: ^10.0.1
         version: 10.0.1(eslint@10.6.0(supports-color@10.2.2))
@@ -136,6 +139,12 @@ packages:
     peerDependencies:
       aws-cdk-lib: ^2.244.0
       constructs: ^10.5.0
+
+  '@aws-cdk/cloud-assembly-api@2.2.6':
+    resolution: {integrity: sha512-lw+Z5JT4e5rAMMR8tvj2yKSIQTvlxpBeYMUjfSgpJ4RN9d94vF6CpnvPqq6LsfO37n6jw0ufQrDNrR8ZHWKkuw==}
+    engines: {node: '>= 18.0.0'}
+    peerDependencies:
+      '@aws-cdk/cloud-assembly-schema': '>=54.5.0'
 
   '@aws-cdk/cloud-assembly-schema@54.5.0':
     resolution: {integrity: sha512-X37oRfMQYO/wXBBDotbW8msJ6AgrcMio/W6TpDR/9To9TUWld1KtY/jveHpU58nZyLVPTYEhDgFP548w3JJGsQ==}
@@ -1944,6 +1953,9 @@ packages:
     engines: {node: '>=6'}
     hasBin: true
 
+  jsonschema@1.5.0:
+    resolution: {integrity: sha512-K+A9hhqbn0f3pJX17Q/7H6yQfD/5OXgdrR5UE12gMXCiN9D5Xq2o5mddV2QEcX/bjla99ASsAAQUyMCCRWAEhw==}
+
   keyv@4.5.4:
     resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==}
 
@@ -2677,6 +2689,12 @@ snapshots:
     dependencies:
       aws-cdk-lib: 2.260.0(constructs@10.6.0)
       constructs: 10.6.0
+
+  '@aws-cdk/cloud-assembly-api@2.2.6(@aws-cdk/cloud-assembly-schema@54.5.0)':
+    dependencies:
+      '@aws-cdk/cloud-assembly-schema': 54.5.0
+      jsonschema: 1.5.0
+      semver: 7.8.5
 
   '@aws-cdk/cloud-assembly-schema@54.5.0': {}
 
@@ -4870,6 +4888,8 @@ snapshots:
   json-stable-stringify-without-jsonify@1.0.1: {}
 
   json5@2.2.3: {}
+
+  jsonschema@1.5.0: {}
 
   keyv@4.5.4:
     dependencies:

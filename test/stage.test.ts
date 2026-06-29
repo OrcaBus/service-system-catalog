@@ -1,10 +1,9 @@
-import { App, Aspects, RemovalPolicy } from 'aws-cdk-lib';
-import { Match, Template, Annotations } from 'aws-cdk-lib/assertions';
-import { AwsSolutionsChecks, NagSuppressions } from 'cdk-nag';
+import { App, RemovalPolicy, Validations } from 'aws-cdk-lib';
+import { Match, Template } from 'aws-cdk-lib/assertions';
+import { AwsSolutionsChecks } from 'cdk-nag';
 import { getSystemCatalogStatefulStackProps } from '../infrastructure/stage/config';
 import { SystemCatalogStatefulStack } from '../infrastructure/stage/stateful-stack';
 import { SystemCatalogStatelessStack } from '../infrastructure/stage/stateless-stack';
-import { synthesisMessageToString } from './utils';
 
 const TEST_ACCOUNT = '111111111111';
 const TEST_REGION = 'ap-southeast-2';
@@ -73,7 +72,7 @@ describe('system-catalog-stateful-stack', () => {
     },
   });
 
-  Aspects.of(stack).add(new AwsSolutionsChecks());
+  Validations.of(stack).addPlugins(new AwsSolutionsChecks(stack));
   const template = Template.fromStack(stack);
 
   test('creates the table schema used by the app repository', () => {
@@ -139,18 +138,8 @@ describe('system-catalog-stateful-stack', () => {
     });
   });
 
-  test('cdk-nag AwsSolutions Pack errors', () => {
-    const errors = Annotations.fromStack(stack)
-      .findError('*', Match.stringLikeRegexp('AwsSolutions-.*'))
-      .map(synthesisMessageToString);
-    expect(errors).toHaveLength(0);
-  });
-
-  test('cdk-nag AwsSolutions Pack warnings', () => {
-    const warnings = Annotations.fromStack(stack)
-      .findWarning('*', Match.stringLikeRegexp('AwsSolutions-.*'))
-      .map(synthesisMessageToString);
-    expect(warnings).toHaveLength(0);
+  test('cdk-nag AwsSolutions Pack checks pass synthesis', () => {
+    expect(() => app.synth()).not.toThrow();
   });
 });
 
@@ -178,24 +167,20 @@ describe('system-catalog-stateless-stack', () => {
     dynamoDBTableName: 'SystemCatalogTable-BETA',
   });
 
-  Aspects.of(stack).add(new AwsSolutionsChecks());
-  NagSuppressions.addStackSuppressions(
-    stack,
-    [
-      {
-        id: 'AwsSolutions-IAM5',
-        reason: 'Lambda VPC ENI permissions and DynamoDB index grants require wildcard resources.',
-      },
-      {
-        id: 'AwsSolutions-APIG4',
-        reason: 'Root, health, and schema routes are intentionally public.',
-      },
-      {
-        id: 'AwsSolutions-COG4',
-        reason: 'Root, health, and schema routes are intentionally public.',
-      },
-    ],
-    true
+  Validations.of(stack).addPlugins(new AwsSolutionsChecks(stack));
+  Validations.of(stack).acknowledge(
+    {
+      id: 'AwsSolutions-IAM5',
+      reason: 'Lambda VPC ENI permissions and DynamoDB index grants require wildcard resources.',
+    },
+    {
+      id: 'AwsSolutions-APIG4',
+      reason: 'Root, health, and schema routes are intentionally public.',
+    },
+    {
+      id: 'AwsSolutions-COG4',
+      reason: 'Root, health, and schema routes are intentionally public.',
+    }
   );
   const template = Template.fromStack(stack);
 
@@ -276,17 +261,7 @@ describe('system-catalog-stateless-stack', () => {
     });
   });
 
-  test('cdk-nag AwsSolutions Pack errors', () => {
-    const errors = Annotations.fromStack(stack)
-      .findError('*', Match.stringLikeRegexp('AwsSolutions-.*'))
-      .map(synthesisMessageToString);
-    expect(errors).toHaveLength(0);
-  });
-
-  test('cdk-nag AwsSolutions Pack warnings', () => {
-    const warnings = Annotations.fromStack(stack)
-      .findWarning('*', Match.stringLikeRegexp('AwsSolutions-.*'))
-      .map(synthesisMessageToString);
-    expect(warnings).toHaveLength(0);
+  test('cdk-nag AwsSolutions Pack checks pass synthesis', () => {
+    expect(() => app.synth()).not.toThrow();
   });
 });

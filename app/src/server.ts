@@ -90,8 +90,7 @@ function logApiCall(
 ): void {
   const url = new URL(request.url);
   const path = `${url.pathname}${url.search}`;
-  const httpVersion =
-    'httpVersion' in bindings.incoming ? bindings.incoming.httpVersion : '1.1';
+  const httpVersion = 'httpVersion' in bindings.incoming ? bindings.incoming.httpVersion : '1.1';
 
   console.log(
     `${getRemoteAddress(bindings)} - - [${formatAccessLogDate(new Date())}] ` +
