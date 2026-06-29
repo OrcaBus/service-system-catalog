@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
 import { StatelessStack } from '../infrastructure/toolchain/stateless-stack';
 import { StatefulStack } from '../infrastructure/toolchain/stateful-stack';
@@ -12,17 +11,13 @@ if (!deployMode) {
 }
 
 if (deployMode === 'stateless') {
-  new StatelessStack(app, 'OrcaBusStatelessHelloWorldStack', {
+  new StatelessStack(app, 'OrcaBusSystemCatalogStatelessStack', {
     env: TOOLCHAIN_ENVIRONMENT,
   });
 } else if (deployMode === 'stateful') {
-  new StatefulStack(
-    app,
-    /* TODO: Replace with string. Example: */ 'OrcaBusStateful{ServiceName}Stack',
-    {
-      env: TOOLCHAIN_ENVIRONMENT,
-    }
-  );
+  new StatefulStack(app, 'OrcaBusSystemCatalogStatefulStack', {
+    env: TOOLCHAIN_ENVIRONMENT,
+  });
 } else {
   throw new Error("Invalid 'deployMode` set in the context");
 }

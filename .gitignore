@@ -1,6 +1,9 @@
 *.js
 !jest.config.js
+!app/eslint.config.js
 *.d.ts
+!app/src/generated/
+!app/src/generated/system-catalog.openapi.d.ts
 node_modules
 
 # CDK asset staging directory
@@ -14,3 +17,9 @@ cdk.out
 # IDE
 .idea
 .DS_Store
+
+# application
+app/node_modules
+app/dist
+app/coverage
+.dynamodb

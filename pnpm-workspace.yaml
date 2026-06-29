@@ -1,0 +1,47 @@
+packages:
+  - app
+
+allowBuilds:
+  esbuild: false
+  unrs-resolver: false
+minimumReleaseAgeExclude:
+  # First-party UMCCR scope: trusted, frequently bumped, and exempt from the
+  # newly-published-package age gate. A scope glob matches every version, so new
+  # releases don't trip CI (unlike pinned name@version entries, which also don't
+  # reliably match scoped packages).
+  - '@orcabus/*'
+  - '@aws-sdk/client-dynamodb@3.1064.0'
+  - '@aws-sdk/core@3.974.19'
+  - '@aws-sdk/credential-provider-env@3.972.45'
+  - '@aws-sdk/credential-provider-http@3.972.47'
+  - '@aws-sdk/credential-provider-ini@3.972.51'
+  - '@aws-sdk/credential-provider-login@3.972.50'
+  - '@aws-sdk/credential-provider-node@3.972.53'
+  - '@aws-sdk/credential-provider-process@3.972.45'
+  - '@aws-sdk/credential-provider-sso@3.972.50'
+  - '@aws-sdk/credential-provider-web-identity@3.972.50'
+  - '@aws-sdk/dynamodb-codec@3.973.19'
+  - '@aws-sdk/endpoint-cache@3.972.7'
+  - '@aws-sdk/lib-dynamodb@3.1064.0'
+  - '@aws-sdk/middleware-endpoint-discovery@3.972.18'
+  - '@aws-sdk/nested-clients@3.997.18'
+  - '@aws-sdk/signature-v4-multi-region@3.996.33'
+  - '@aws-sdk/token-providers@3.1064.0'
+  - '@aws-sdk/types@3.973.12'
+  - '@aws-sdk/util-dynamodb@3.996.4'
+  - '@aws-sdk/xml-builder@3.972.29'
+  - '@typescript-eslint/eslint-plugin@8.61.0'
+  - '@typescript-eslint/parser@8.61.0'
+  - '@typescript-eslint/project-service@8.61.0'
+  - '@typescript-eslint/scope-manager@8.61.0'
+  - '@typescript-eslint/tsconfig-utils@8.61.0'
+  - '@typescript-eslint/type-utils@8.61.0'
+  - '@typescript-eslint/types@8.61.0'
+  - '@typescript-eslint/typescript-estree@8.61.0'
+  - '@typescript-eslint/utils@8.61.0'
+  - '@typescript-eslint/visitor-keys@8.61.0'
+  - hono@4.12.25
+  - typescript-eslint@8.61.0
+  - js-yaml@4.1.2
+overrides:
+  js-yaml@<=4.1.1: ^4.1.2

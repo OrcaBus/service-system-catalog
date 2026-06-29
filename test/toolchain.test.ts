@@ -1,44 +1,71 @@
-import { App, Aspects } from 'aws-cdk-lib';
-import { Annotations, Match } from 'aws-cdk-lib/assertions';
-import { AwsSolutionsChecks, NagSuppressions } from 'cdk-nag';
-import { StatelessStack } from '../infrastructure/toolchain/stateless-stack';
-import { synthesisMessageToString } from './utils';
+import { App, Validations } from 'aws-cdk-lib';
+import { Template } from 'aws-cdk-lib/assertions';
+import { AwsSolutionsChecks } from 'cdk-nag';
+import { StatefulStack } from '../infrastructure/toolchain/stateful-stack';
 
-describe('cdk-nag-stateless-toolchain-stack', () => {
+type ParsedBuildSpec = {
+  phases?: {
+    install?: {
+      'runtime-versions'?: {
+        nodejs?: string;
+      };
+    };
+  };
+};
+
+type NodeRuntimeBuildSpec = {
+  phases: {
+    install: {
+      'runtime-versions': {
+        nodejs?: string;
+      };
+    };
+  };
+};
+
+function hasNodeRuntime(buildSpec: ParsedBuildSpec): buildSpec is NodeRuntimeBuildSpec {
+  return buildSpec.phases?.install?.['runtime-versions'] !== undefined;
+}
+
+describe('cdk-nag-stateful-toolchain-stack', () => {
   const app = new App({});
 
-  const statelessStack = new StatelessStack(app, 'StatelessStack', {
+  const stack = new StatefulStack(app, 'StatefulStack', {
     env: {
       account: '111111111111',
       region: 'ap-southeast-2',
     },
   });
 
-  Aspects.of(statelessStack).add(new AwsSolutionsChecks());
+  Validations.of(stack).addPlugins(new AwsSolutionsChecks(stack));
 
-  NagSuppressions.addStackSuppressions(statelessStack, [
+  Validations.of(stack).acknowledge(
     { id: 'AwsSolutions-IAM4', reason: 'Allow CDK Pipeline' },
     { id: 'AwsSolutions-IAM5', reason: 'Allow CDK Pipeline' },
     { id: 'AwsSolutions-S1', reason: 'Allow CDK Pipeline' },
     { id: 'AwsSolutions-KMS5', reason: 'Allow CDK Pipeline' },
-    { id: 'AwsSolutions-CB3', reason: 'Allow CDK Pipeline' },
-  ]);
+    { id: 'AwsSolutions-CB3', reason: 'Allow CDK Pipeline' }
+  );
+  const template = Template.fromStack(stack);
 
-  test(`cdk-nag AwsSolutions Pack errors`, () => {
-    const errors = Annotations.fromStack(statelessStack)
-      .findError('*', Match.stringLikeRegexp('AwsSolutions-.*'))
-      .map(synthesisMessageToString);
-    expect(errors).toHaveLength(0);
+  test('cdk-nag AwsSolutions Pack checks pass synthesis', () => {
+    expect(() => app.synth()).not.toThrow();
   });
 
-  test(`cdk-nag AwsSolutions Pack warnings`, () => {
-    const warnings = Annotations.fromStack(statelessStack)
-      .findWarning('*', Match.stringLikeRegexp('AwsSolutions-.*'))
-      .map(synthesisMessageToString);
-    expect(warnings).toHaveLength(0);
+  test('uses Node.js 24 for pipeline test and synth CodeBuild projects', () => {
+    const codeBuildProjects = template.findResources('AWS::CodeBuild::Project') as Record<
+      string,
+      { Properties?: { Source?: { BuildSpec?: string } } }
+    >;
+    const buildSpecsWithRuntime = Object.values(codeBuildProjects)
+      .map((project) => project.Properties?.Source?.BuildSpec)
+      .filter((buildSpec): buildSpec is string => buildSpec !== undefined)
+      .map((buildSpec) => JSON.parse(buildSpec) as ParsedBuildSpec)
+      .filter(hasNodeRuntime);
+
+    expect(buildSpecsWithRuntime).toHaveLength(3);
+    for (const buildSpec of buildSpecsWithRuntime) {
+      expect(buildSpec.phases.install['runtime-versions'].nodejs).toBe('24.x');
+    }
   });
 });
-
-// TODO: Add cdk-nag-stateful-toolchain-stack tests once the StatefulStack
-// is implemented with a real stack class (replace the TODO placeholders in
-// infrastructure/toolchain/stateful-stack.ts).

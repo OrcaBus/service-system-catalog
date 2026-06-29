@@ -1,16 +1,42 @@
-import { defineConfig, globalIgnores } from 'eslint/config';
 import globals from 'globals';
 import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 
-export default defineConfig([
-  { files: ['**/*.{js,mjs,cjs,ts}'] },
-  { files: ['**/*.{js,mjs,cjs,ts}'], languageOptions: { globals: globals.browser } },
-  { files: ['**/*.{js,mjs,cjs,ts}'], plugins: { js }, extends: ['js/recommended'] },
-  tseslint.configs.recommended,
-  globalIgnores([
-    'cdk.out/',
-    'node_modules/*',
-    'app/*', // App folder should have its own eslint config
-  ]),
-]);
+export default tseslint.config(
+  {
+    ignores: ['app/**', 'cdk.out/**', 'node_modules/**', 'coverage/**', 'dist/**'],
+  },
+  js.configs.recommended,
+  ...tseslint.configs.recommended.map((config) => ({
+    ...config,
+    files: ['**/*.ts'],
+  })),
+  {
+    files: ['**/*.ts'],
+    languageOptions: {
+      parserOptions: {
+        tsconfigRootDir: import.meta.dirname,
+        project: './tsconfig.json',
+      },
+      globals: {
+        ...globals.node,
+        ...globals.jest,
+      },
+    },
+    rules: {
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+        },
+      ],
+    },
+  },
+  {
+    files: ['**/*.{js,mjs,cjs}'],
+    languageOptions: {
+      globals: globals.node,
+    },
+  }
+);

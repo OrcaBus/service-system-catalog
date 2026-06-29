@@ -18,19 +18,29 @@ on:
     branches:
       - main
 
-permissions: read-all
+# Least privilege: these jobs only read the repo (checkout, install, test, secret scan).
+permissions:
+  contents: read
+
+# Cancel superseded in-progress runs for the same PR to save CI minutes.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# Single source of truth for the Node version used across all jobs.
+env:
+  NODE_VERSION: '24.x'
 
 # Actions Used (please keep this documented here as added)
 #  https://github.com/marketplace/actions/checkout
-#  https://github.com/marketplace/actions/setup-python
+#  https://github.com/marketplace/actions/setup-pnpm
+#  https://github.com/marketplace/actions/setup-node-js-environment
 #  https://github.com/marketplace/actions/trufflehog-oss
-#  https://github.com/marketplace/actions/checkout
-#  https://github.com/marketplace/actions/cache
-#  https://github.com/actions-rust-lang/setup-rust-toolchain
 
 jobs:
   pre-commit-lint-security:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     if: ${{ !github.event.pull_request.draft }}
     steps:
       - name: Checkout code
@@ -42,7 +52,7 @@ jobs:
 
       - uses: actions/setup-node@v6
         with:
-          node-version: '24.x'
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
 
       - run: corepack enable
@@ -57,10 +67,10 @@ jobs:
       # TODO see whether we can leverage https://github.com/pre-commit/action
       - name: Install system-wide tools dependencies
         run: |
-          pip3 install pre-commit detect-secrets black ggshield
+          pip3 install pre-commit
 
       - name: TruffleHog OSS
-        uses: trufflesecurity/trufflehog@v3.34.0
+        uses: trufflesecurity/trufflehog@main
         with:
           path: ./
           base: ${{ github.event.repository.default_branch }}
@@ -68,9 +78,8 @@ jobs:
           extra_args: --debug --only-verified
 
       - name: Install dependencies
-        run: |
-          make install
-          (cd app && make install)
+        # Root frozen install covers the whole pnpm workspace (app/ included).
+        run: make install
 
       - name: Lint and code formatting
         run: |
@@ -78,15 +87,16 @@ jobs:
 
   test-iac:
     runs-on: ubuntu-22.04-arm
+    timeout-minutes: 15
     if: ${{ !github.event.pull_request.draft }}
     steps:
       - uses: actions/checkout@v4
 
       - uses: pnpm/action-setup@v4
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
-          node-version: '24.x'
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
 
       - run: corepack enable
@@ -97,20 +107,26 @@ jobs:
 
   test-app:
     runs-on: ubuntu-22.04-arm
+    # Heavier: spins up DynamoDB Local via docker compose, runs Vitest, tears down.
+    timeout-minutes: 20
     if: ${{ !github.event.pull_request.draft }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v6
         with:
-          python-version: '3.12'
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - run: corepack enable
 
       - name: Print toolchain versions
         run: |
           node -v
-          python -V
-          pip3 -V
+          pnpm -v
           make --version
 
       - name: Install

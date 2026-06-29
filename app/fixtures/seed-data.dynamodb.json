@@ -1,0 +1,1766 @@
+{
+  "SystemCatalog": [
+    {
+      "PutRequest": {
+        "Item": {
+          "PK": {
+            "S": "CATALOG_V1"
+          },
+          "SK": {
+            "S": "MAP#umccr-production"
+          },
+          "GSI1PK": {
+            "S": "STATUS#active"
+          },
+          "GSI1SK": {
+            "S": "UPDATED#2026-04-10T06:30:00Z#umccr-production"
+          },
+          "entityType": {
+            "S": "MAP"
+          },
+          "mapId": {
+            "S": "umccr-production"
+          },
+          "name": {
+            "S": "Primary Sequencing Pipeline"
+          },
+          "description": {
+            "S": "Standard operating procedure for Illumina HiSeq raw data processing and downstream bioinformatics analysis workflows."
+          },
+          "status": {
+            "S": "active"
+          },
+          "createdBy": {
+            "S": "Dr. Aris Thorne"
+          },
+          "createdAt": {
+            "S": "2024-01-15T09:00:00Z"
+          },
+          "updatedBy": {
+            "S": "Dr. Aris Thorne"
+          },
+          "updatedAt": {
+            "S": "2026-04-10T06:30:00Z"
+          },
+          "tags": {
+            "M": {
+              "environment": {
+                "S": "production"
+              },
+              "team": {
+                "S": "umccr"
+              }
+            }
+          },
+          "nodeCount": {
+            "N": "18"
+          },
+          "edgeCount": {
+            "N": "21"
+          },
+          "nodes": {
+            "L": [
+              {
+                "M": {
+                  "nodeId": {
+                    "S": "bssh"
+                  },
+                  "nodeType": {
+                    "S": "pipeline"
+                  },
+                  "label": {
+                    "S": "BSSH"
+                  },
+                  "version": {
+                    "S": "v2.5.0"
+                  },
+                  "engine": {
+                    "S": "BASESPACE"
+                  },
+                  "description": {
+                    "S": "BaseSpace Sequence Hub — Illumina cloud service that receives raw sequencing data from the instrument."
+                  },
+                  "groupIds": {
+                    "L": [
+                      {
+                        "S": "SEQUENCING"
+                      },
+                      {
+                        "S": "WGS"
+                      },
+                      {
+                        "S": "WTS"
+                      },
+                      {
+                        "S": "CTDNA"
+                      }
+                    ]
+                  },
+                  "inputEvents": {
+                    "L": [
+                      {
+                        "M": {
+                          "name": {
+                            "S": "orcabus.instrumentrun.succeeded"
+                          },
+                          "topic": {
+                            "S": "orcabus.instrumentrun"
+                          },
+                          "payload": {
+                            "M": {
+                              "instrumentRunId": {
+                                "S": "231116_A01052_0172_BHVLM5DSX7"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "outputEvents": {
+                    "L": [
+                      {
+                        "M": {
+                          "name": {
+                            "S": "orcabus.bssh.fastqlistrows_event_showered"
+                          },
+                          "topic": {
+                            "S": "orcabus.bssh"
+                          },
+                          "payload": {
+                            "M": {
+                              "instrumentRunId": {
+                                "S": "231116_A01052_0172_BHVLM5DSX7"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "tags": {
+                    "M": {
+                      "maxRetries": {
+                        "S": "2"
+                      },
+                      "timeout": {
+                        "S": "2h"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "M": {
+                  "nodeId": {
+                    "S": "bcl-convert"
+                  },
+                  "nodeType": {
+                    "S": "pipeline"
+                  },
+                  "label": {
+                    "S": "BCL Convert"
+                  },
+                  "version": {
+                    "S": "v4.2.7"
+                  },
+                  "engine": {
+                    "S": "ICA"
+                  },
+                  "description": {
+                    "S": "Illumina BCL to FASTQ conversion pipeline on ICA (DRAGEN Cloud)."
+                  },
+                  "groupIds": {
+                    "L": [
+                      {
+                        "S": "SEQUENCING"
+                      },
+                      {
+                        "S": "WGS"
+                      },
+                      {
+                        "S": "WTS"
+                      },
+                      {
+                        "S": "CTDNA"
+                      }
+                    ]
+                  },
+                  "inputEvents": {
+                    "L": []
+                  },
+                  "outputEvents": {
+                    "L": []
+                  },
+                  "tags": {
+                    "M": {
+                      "maxRetries": {
+                        "S": "2"
+                      },
+                      "timeout": {
+                        "S": "8h"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "M": {
+                  "nodeId": {
+                    "S": "tso-ctdna-tumor-only"
+                  },
+                  "nodeType": {
+                    "S": "pipeline"
+                  },
+                  "label": {
+                    "S": "TSO ctDNA Tumor Only"
+                  },
+                  "version": {
+                    "S": "v2.6.1"
+                  },
+                  "engine": {
+                    "S": "ICA"
+                  },
+                  "description": {
+                    "S": "TruSight Oncology ctDNA pipeline for circulating tumor DNA analysis."
+                  },
+                  "groupIds": {
+                    "L": [
+                      {
+                        "S": "CTDNA"
+                      }
+                    ]
+                  },
+                  "inputEvents": {
+                    "L": []
+                  },
+                  "outputEvents": {
+                    "L": []
+                  },
+                  "tags": {
+                    "M": {
+                      "maxRetries": {
+                        "S": "2"
+                      },
+                      "timeout": {
+                        "S": "12h"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "M": {
+                  "nodeId": {
+                    "S": "wgs-alignment-qc"
+                  },
+                  "nodeType": {
+                    "S": "pipeline"
+                  },
+                  "label": {
+                    "S": "WGS Alignment QC"
+                  },
+                  "version": {
+                    "S": "v4.2.4"
+                  },
+                  "engine": {
+                    "S": "ICA"
+                  },
+                  "description": {
+                    "S": "Whole-genome sequencing alignment and quality control on DRAGEN."
+                  },
+                  "groupIds": {
+                    "L": [
+                      {
+                        "S": "WGS"
+                      },
+                      {
+                        "S": "QC"
+                      }
+                    ]
+                  },
+                  "inputEvents": {
+                    "L": []
+                  },
+                  "outputEvents": {
+                    "L": []
+                  },
+                  "tags": {
+                    "M": {
+                      "maxRetries": {
+                        "S": "3"
+                      },
+                      "timeout": {
+                        "S": "24h"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "M": {
+                  "nodeId": {
+                    "S": "wts-alignment-qc"
+                  },
+                  "nodeType": {
+                    "S": "pipeline"
+                  },
+                  "label": {
+                    "S": "WTS Alignment QC"
+                  },
+                  "version": {
+                    "S": "v4.2.4"
+                  },
+                  "engine": {
+                    "S": "ICA"
+                  },
+                  "description": {
+                    "S": "Whole-transcriptome sequencing alignment and QC on DRAGEN."
+                  },
+                  "groupIds": {
+                    "L": [
+                      {
+                        "S": "WTS"
+                      },
+                      {
+                        "S": "QC"
+                      }
+                    ]
+                  },
+                  "inputEvents": {
+                    "L": []
+                  },
+                  "outputEvents": {
+                    "L": []
+                  },
+                  "tags": {
+                    "M": {
+                      "maxRetries": {
+                        "S": "3"
+                      },
+                      "timeout": {
+                        "S": "18h"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "M": {
+                  "nodeId": {
+                    "S": "star-alignment"
+                  },
+                  "nodeType": {
+                    "S": "pipeline"
+                  },
+                  "label": {
+                    "S": "STAR Alignment"
+                  },
+                  "version": {
+                    "S": "v2.7.10b"
+                  },
+                  "engine": {
+                    "S": "AWS_BATCH"
+                  },
+                  "description": {
+                    "S": "STAR splice-aware RNA alignment for transcriptome analysis."
+                  },
+                  "groupIds": {
+                    "L": [
+                      {
+                        "S": "WTS"
+                      },
+                      {
+                        "S": "INTEGRATED"
+                      }
+                    ]
+                  },
+                  "inputEvents": {
+                    "L": []
+                  },
+                  "outputEvents": {
+                    "L": []
+                  },
+                  "tags": {
+                    "M": {
+                      "maxRetries": {
+                        "S": "2"
+                      },
+                      "timeout": {
+                        "S": "12h"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "M": {
+                  "nodeId": {
+                    "S": "pierian-dx"
+                  },
+                  "nodeType": {
+                    "S": "pipeline"
+                  },
+                  "label": {
+                    "S": "Pierian DX"
+                  },
+                  "version": {
+                    "S": "v5.4.0"
+                  },
+                  "engine": {
+                    "S": "PIERIAN"
+                  },
+                  "description": {
+                    "S": "Clinical genomics interpretation platform for case accession automation."
+                  },
+                  "groupIds": {
+                    "L": [
+                      {
+                        "S": "CTDNA"
+                      }
+                    ]
+                  },
+                  "inputEvents": {
+                    "L": []
+                  },
+                  "outputEvents": {
+                    "L": []
+                  },
+                  "tags": {
+                    "M": {
+                      "maxRetries": {
+                        "S": "1"
+                      },
+                      "timeout": {
+                        "S": "4h"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "M": {
+                  "nodeId": {
+                    "S": "holmes"
+                  },
+                  "nodeType": {
+                    "S": "pipeline"
+                  },
+                  "label": {
+                    "S": "Holmes"
+                  },
+                  "version": {
+                    "S": "v1.8.2"
+                  },
+                  "engine": {
+                    "S": "AWS_BATCH"
+                  },
+                  "description": {
+                    "S": "BAM fingerprint extraction service for sample identity verification."
+                  },
+                  "groupIds": {
+                    "L": [
+                      {
+                        "S": "QC"
+                      }
+                    ]
+                  },
+                  "inputEvents": {
+                    "L": []
+                  },
+                  "outputEvents": {
+                    "L": []
+                  },
+                  "tags": {
+                    "M": {}
+                  }
+                }
+              },
+              {
+                "M": {
+                  "nodeId": {
+                    "S": "wgs-tumor-normal"
+                  },
+                  "nodeType": {
+                    "S": "pipeline"
+                  },
+                  "label": {
+                    "S": "WGS Tumor Normal"
+                  },
+                  "version": {
+                    "S": "v4.2.4"
+                  },
+                  "engine": {
+                    "S": "ICA"
+                  },
+                  "description": {
+                    "S": "DRAGEN somatic variant calling comparing tumor vs matched normal."
+                  },
+                  "groupIds": {
+                    "L": [
+                      {
+                        "S": "WGS"
+                      },
+                      {
+                        "S": "INTEGRATED"
+                      }
+                    ]
+                  },
+                  "inputEvents": {
+                    "L": []
+                  },
+                  "outputEvents": {
+                    "L": []
+                  },
+                  "tags": {
+                    "M": {
+                      "maxRetries": {
+                        "S": "2"
+                      },
+                      "timeout": {
+                        "S": "24h"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "M": {
+                  "nodeId": {
+                    "S": "wts-tumor-only"
+                  },
+                  "nodeType": {
+                    "S": "pipeline"
+                  },
+                  "label": {
+                    "S": "WTS Tumor Only"
+                  },
+                  "version": {
+                    "S": "v4.2.4"
+                  },
+                  "engine": {
+                    "S": "ICA"
+                  },
+                  "description": {
+                    "S": "DRAGEN transcriptome tumor-only pipeline for RNA expression and fusion."
+                  },
+                  "groupIds": {
+                    "L": [
+                      {
+                        "S": "WTS"
+                      },
+                      {
+                        "S": "INTEGRATED"
+                      }
+                    ]
+                  },
+                  "inputEvents": {
+                    "L": []
+                  },
+                  "outputEvents": {
+                    "L": []
+                  },
+                  "tags": {
+                    "M": {}
+                  }
+                }
+              },
+              {
+                "M": {
+                  "nodeId": {
+                    "S": "gpl"
+                  },
+                  "nodeType": {
+                    "S": "pipeline"
+                  },
+                  "label": {
+                    "S": "GPL"
+                  },
+                  "version": {
+                    "S": "v1.2.0"
+                  },
+                  "engine": {
+                    "S": "AWS_BATCH"
+                  },
+                  "description": {
+                    "S": "Germline/pharmacogenomics/LoH analysis using tumor-normal pairs."
+                  },
+                  "groupIds": {
+                    "L": [
+                      {
+                        "S": "QC"
+                      }
+                    ]
+                  },
+                  "inputEvents": {
+                    "L": []
+                  },
+                  "outputEvents": {
+                    "L": []
+                  },
+                  "tags": {
+                    "M": {}
+                  }
+                }
+              },
+              {
+                "M": {
+                  "nodeId": {
+                    "S": "oncoanalyser-wts"
+                  },
+                  "nodeType": {
+                    "S": "pipeline"
+                  },
+                  "label": {
+                    "S": "OncoAnalyser WTS"
+                  },
+                  "version": {
+                    "S": "v1.0.0"
+                  },
+                  "engine": {
+                    "S": "AWS_BATCH"
+                  },
+                  "description": {
+                    "S": "WTS component of the OncoAnalyser suite."
+                  },
+                  "groupIds": {
+                    "L": [
+                      {
+                        "S": "WTS"
+                      },
+                      {
+                        "S": "INTEGRATED"
+                      }
+                    ]
+                  },
+                  "inputEvents": {
+                    "L": []
+                  },
+                  "outputEvents": {
+                    "L": []
+                  },
+                  "tags": {
+                    "M": {}
+                  }
+                }
+              },
+              {
+                "M": {
+                  "nodeId": {
+                    "S": "umccrise"
+                  },
+                  "nodeType": {
+                    "S": "pipeline"
+                  },
+                  "label": {
+                    "S": "UMCCRise"
+                  },
+                  "version": {
+                    "S": "v2.3.1"
+                  },
+                  "engine": {
+                    "S": "AWS_BATCH"
+                  },
+                  "description": {
+                    "S": "UMCCR cancer report generation from somatic variant calls."
+                  },
+                  "groupIds": {
+                    "L": [
+                      {
+                        "S": "WGS"
+                      }
+                    ]
+                  },
+                  "inputEvents": {
+                    "L": []
+                  },
+                  "outputEvents": {
+                    "L": []
+                  },
+                  "tags": {
+                    "M": {}
+                  }
+                }
+              },
+              {
+                "M": {
+                  "nodeId": {
+                    "S": "oncoanalyser-wgs"
+                  },
+                  "nodeType": {
+                    "S": "pipeline"
+                  },
+                  "label": {
+                    "S": "OncoAnalyser WGS"
+                  },
+                  "version": {
+                    "S": "v1.0.0"
+                  },
+                  "engine": {
+                    "S": "AWS_BATCH"
+                  },
+                  "description": {
+                    "S": "WGS component of the OncoAnalyser suite for comprehensive somatic analysis."
+                  },
+                  "groupIds": {
+                    "L": [
+                      {
+                        "S": "WGS"
+                      },
+                      {
+                        "S": "WTS"
+                      },
+                      {
+                        "S": "INTEGRATED"
+                      }
+                    ]
+                  },
+                  "inputEvents": {
+                    "L": []
+                  },
+                  "outputEvents": {
+                    "L": []
+                  },
+                  "tags": {
+                    "M": {}
+                  }
+                }
+              },
+              {
+                "M": {
+                  "nodeId": {
+                    "S": "pancan"
+                  },
+                  "nodeType": {
+                    "S": "pipeline"
+                  },
+                  "label": {
+                    "S": "PanCan"
+                  },
+                  "version": {
+                    "S": "v1.1.0"
+                  },
+                  "engine": {
+                    "S": "AWS_BATCH"
+                  },
+                  "description": {
+                    "S": "Pan-cancer analysis pipeline for cross-tumour-type feature extraction."
+                  },
+                  "groupIds": {
+                    "L": [
+                      {
+                        "S": "WGS"
+                      }
+                    ]
+                  },
+                  "inputEvents": {
+                    "L": []
+                  },
+                  "outputEvents": {
+                    "L": []
+                  },
+                  "tags": {
+                    "M": {}
+                  }
+                }
+              },
+              {
+                "M": {
+                  "nodeId": {
+                    "S": "sash"
+                  },
+                  "nodeType": {
+                    "S": "pipeline"
+                  },
+                  "label": {
+                    "S": "Sash"
+                  },
+                  "version": {
+                    "S": "v1.0.0"
+                  },
+                  "engine": {
+                    "S": "AWS_BATCH"
+                  },
+                  "description": {
+                    "S": "Somatic annotation and structural harmonisation pipeline."
+                  },
+                  "groupIds": {
+                    "L": [
+                      {
+                        "S": "WGS"
+                      },
+                      {
+                        "S": "INTEGRATED"
+                      }
+                    ]
+                  },
+                  "inputEvents": {
+                    "L": []
+                  },
+                  "outputEvents": {
+                    "L": []
+                  },
+                  "tags": {
+                    "M": {}
+                  }
+                }
+              },
+              {
+                "M": {
+                  "nodeId": {
+                    "S": "oncoanalyser-wgts-existing-both"
+                  },
+                  "nodeType": {
+                    "S": "pipeline"
+                  },
+                  "label": {
+                    "S": "OncoAnalyser WGTS"
+                  },
+                  "version": {
+                    "S": "v1.0.0"
+                  },
+                  "engine": {
+                    "S": "AWS_BATCH"
+                  },
+                  "description": {
+                    "S": "Combined WGS+WTS OncoAnalyser run when both data types are available."
+                  },
+                  "groupIds": {
+                    "L": [
+                      {
+                        "S": "INTEGRATED"
+                      }
+                    ]
+                  },
+                  "inputEvents": {
+                    "L": []
+                  },
+                  "outputEvents": {
+                    "L": []
+                  },
+                  "tags": {
+                    "M": {}
+                  }
+                }
+              },
+              {
+                "M": {
+                  "nodeId": {
+                    "S": "rnasum"
+                  },
+                  "nodeType": {
+                    "S": "pipeline"
+                  },
+                  "label": {
+                    "S": "RNAsum"
+                  },
+                  "version": {
+                    "S": "v1.0.0"
+                  },
+                  "engine": {
+                    "S": "AWS_BATCH"
+                  },
+                  "description": {
+                    "S": "RNA expression summarisation and reporting integrated with WGS results."
+                  },
+                  "groupIds": {
+                    "L": [
+                      {
+                        "S": "WTS"
+                      },
+                      {
+                        "S": "INTEGRATED"
+                      }
+                    ]
+                  },
+                  "inputEvents": {
+                    "L": []
+                  },
+                  "outputEvents": {
+                    "L": []
+                  },
+                  "tags": {
+                    "M": {}
+                  }
+                }
+              }
+            ]
+          },
+          "groups": {
+            "L": [
+              {
+                "M": {
+                  "groupId": {
+                    "S": "SEQUENCING"
+                  },
+                  "name": {
+                    "S": "Sequencing & BCL"
+                  },
+                  "type": {
+                    "S": "analysis"
+                  },
+                  "color": {
+                    "S": "#06b6d4"
+                  },
+                  "nodeIds": {
+                    "L": [
+                      {
+                        "S": "bssh"
+                      },
+                      {
+                        "S": "bcl-convert"
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "M": {
+                  "groupId": {
+                    "S": "CTDNA"
+                  },
+                  "name": {
+                    "S": "ctDNA Analysis"
+                  },
+                  "type": {
+                    "S": "analysis"
+                  },
+                  "color": {
+                    "S": "#a855f7"
+                  },
+                  "nodeIds": {
+                    "L": [
+                      {
+                        "S": "bssh"
+                      },
+                      {
+                        "S": "bcl-convert"
+                      },
+                      {
+                        "S": "tso-ctdna-tumor-only"
+                      },
+                      {
+                        "S": "pierian-dx"
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "M": {
+                  "groupId": {
+                    "S": "WGS"
+                  },
+                  "name": {
+                    "S": "WGS Somatic"
+                  },
+                  "type": {
+                    "S": "analysis"
+                  },
+                  "color": {
+                    "S": "#f59e0b"
+                  },
+                  "nodeIds": {
+                    "L": [
+                      {
+                        "S": "bssh"
+                      },
+                      {
+                        "S": "bcl-convert"
+                      },
+                      {
+                        "S": "wgs-alignment-qc"
+                      },
+                      {
+                        "S": "holmes"
+                      },
+                      {
+                        "S": "wgs-tumor-normal"
+                      },
+                      {
+                        "S": "umccrise"
+                      },
+                      {
+                        "S": "oncoanalyser-wgs"
+                      },
+                      {
+                        "S": "sash"
+                      },
+                      {
+                        "S": "pancan"
+                      },
+                      {
+                        "S": "gpl"
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "M": {
+                  "groupId": {
+                    "S": "WTS"
+                  },
+                  "name": {
+                    "S": "WTS Transcriptome"
+                  },
+                  "type": {
+                    "S": "analysis"
+                  },
+                  "color": {
+                    "S": "#3b82f6"
+                  },
+                  "nodeIds": {
+                    "L": [
+                      {
+                        "S": "bssh"
+                      },
+                      {
+                        "S": "bcl-convert"
+                      },
+                      {
+                        "S": "wts-alignment-qc"
+                      },
+                      {
+                        "S": "wts-tumor-only"
+                      },
+                      {
+                        "S": "star-alignment"
+                      },
+                      {
+                        "S": "oncoanalyser-wts"
+                      },
+                      {
+                        "S": "rnasum"
+                      },
+                      {
+                        "S": "oncoanalyser-wgs"
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "M": {
+                  "groupId": {
+                    "S": "QC"
+                  },
+                  "name": {
+                    "S": "QC & Fingerprinting"
+                  },
+                  "type": {
+                    "S": "analysis"
+                  },
+                  "color": {
+                    "S": "#10b981"
+                  },
+                  "nodeIds": {
+                    "L": [
+                      {
+                        "S": "bssh"
+                      },
+                      {
+                        "S": "bcl-convert"
+                      },
+                      {
+                        "S": "wgs-alignment-qc"
+                      },
+                      {
+                        "S": "holmes"
+                      },
+                      {
+                        "S": "gpl"
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "M": {
+                  "groupId": {
+                    "S": "INTEGRATED"
+                  },
+                  "name": {
+                    "S": "Integrated WGS+WTS"
+                  },
+                  "type": {
+                    "S": "analysis"
+                  },
+                  "color": {
+                    "S": "#ec4899"
+                  },
+                  "nodeIds": {
+                    "L": [
+                      {
+                        "S": "wgs-tumor-normal"
+                      },
+                      {
+                        "S": "wts-tumor-only"
+                      },
+                      {
+                        "S": "oncoanalyser-wgs"
+                      },
+                      {
+                        "S": "oncoanalyser-wts"
+                      },
+                      {
+                        "S": "sash"
+                      },
+                      {
+                        "S": "oncoanalyser-wgts-existing-both"
+                      },
+                      {
+                        "S": "star-alignment"
+                      },
+                      {
+                        "S": "rnasum"
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          },
+          "edges": {
+            "L": [
+              {
+                "M": {
+                  "edgeId": {
+                    "S": "e-bssh-bcl"
+                  },
+                  "source": {
+                    "S": "bssh"
+                  },
+                  "target": {
+                    "S": "bcl-convert"
+                  },
+                  "edgeType": {
+                    "S": "trigger"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "edgeId": {
+                    "S": "e-bcl-tso"
+                  },
+                  "source": {
+                    "S": "bcl-convert"
+                  },
+                  "target": {
+                    "S": "tso-ctdna-tumor-only"
+                  },
+                  "edgeType": {
+                    "S": "trigger_input"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "edgeId": {
+                    "S": "e-bcl-wgs-qc"
+                  },
+                  "source": {
+                    "S": "bcl-convert"
+                  },
+                  "target": {
+                    "S": "wgs-alignment-qc"
+                  },
+                  "edgeType": {
+                    "S": "trigger_input"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "edgeId": {
+                    "S": "e-bcl-wts-qc"
+                  },
+                  "source": {
+                    "S": "bcl-convert"
+                  },
+                  "target": {
+                    "S": "wts-alignment-qc"
+                  },
+                  "edgeType": {
+                    "S": "trigger_input"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "edgeId": {
+                    "S": "e-tso-pierian"
+                  },
+                  "source": {
+                    "S": "tso-ctdna-tumor-only"
+                  },
+                  "target": {
+                    "S": "pierian-dx"
+                  },
+                  "edgeType": {
+                    "S": "trigger_input"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "edgeId": {
+                    "S": "e-wgs-qc-holmes"
+                  },
+                  "source": {
+                    "S": "wgs-alignment-qc"
+                  },
+                  "target": {
+                    "S": "holmes"
+                  },
+                  "edgeType": {
+                    "S": "trigger_input"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "edgeId": {
+                    "S": "e-wgs-qc-tn"
+                  },
+                  "source": {
+                    "S": "wgs-alignment-qc"
+                  },
+                  "target": {
+                    "S": "wgs-tumor-normal"
+                  },
+                  "edgeType": {
+                    "S": "trigger_input"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "edgeId": {
+                    "S": "e-wts-qc-to"
+                  },
+                  "source": {
+                    "S": "wts-alignment-qc"
+                  },
+                  "target": {
+                    "S": "wts-tumor-only"
+                  },
+                  "edgeType": {
+                    "S": "trigger_input"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "edgeId": {
+                    "S": "e-tn-umccrise"
+                  },
+                  "source": {
+                    "S": "wgs-tumor-normal"
+                  },
+                  "target": {
+                    "S": "umccrise"
+                  },
+                  "edgeType": {
+                    "S": "trigger_input"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "edgeId": {
+                    "S": "e-umccrise-pancan"
+                  },
+                  "source": {
+                    "S": "umccrise"
+                  },
+                  "target": {
+                    "S": "pancan"
+                  },
+                  "edgeType": {
+                    "S": "trigger_input"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "edgeId": {
+                    "S": "e-pancan-rnasum"
+                  },
+                  "source": {
+                    "S": "pancan"
+                  },
+                  "target": {
+                    "S": "rnasum"
+                  },
+                  "edgeType": {
+                    "S": "trigger_input"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "edgeId": {
+                    "S": "e-wts-to-onco-wgs"
+                  },
+                  "source": {
+                    "S": "wts-tumor-only"
+                  },
+                  "target": {
+                    "S": "oncoanalyser-wgs"
+                  },
+                  "edgeType": {
+                    "S": "trigger_input"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "edgeId": {
+                    "S": "e-onco-wgs-sash"
+                  },
+                  "source": {
+                    "S": "oncoanalyser-wgs"
+                  },
+                  "target": {
+                    "S": "sash"
+                  },
+                  "edgeType": {
+                    "S": "trigger_input"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "edgeId": {
+                    "S": "e-star-onco-wts"
+                  },
+                  "source": {
+                    "S": "star-alignment"
+                  },
+                  "target": {
+                    "S": "oncoanalyser-wts"
+                  },
+                  "edgeType": {
+                    "S": "trigger_input"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "edgeId": {
+                    "S": "e-onco-wts-wgts"
+                  },
+                  "source": {
+                    "S": "oncoanalyser-wts"
+                  },
+                  "target": {
+                    "S": "oncoanalyser-wgts-existing-both"
+                  },
+                  "edgeType": {
+                    "S": "trigger_input"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "edgeId": {
+                    "S": "e-bcl-tn-fastq"
+                  },
+                  "source": {
+                    "S": "bcl-convert"
+                  },
+                  "target": {
+                    "S": "wgs-tumor-normal"
+                  },
+                  "edgeType": {
+                    "S": "input_dependency"
+                  },
+                  "label": {
+                    "S": "use FASTQs as input"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "edgeId": {
+                    "S": "e-bcl-wts-fastq"
+                  },
+                  "source": {
+                    "S": "bcl-convert"
+                  },
+                  "target": {
+                    "S": "wts-tumor-only"
+                  },
+                  "edgeType": {
+                    "S": "input_dependency"
+                  },
+                  "label": {
+                    "S": "use FASTQs as input"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "edgeId": {
+                    "S": "e-bcl-star-fastq"
+                  },
+                  "source": {
+                    "S": "bcl-convert"
+                  },
+                  "target": {
+                    "S": "star-alignment"
+                  },
+                  "edgeType": {
+                    "S": "input_dependency"
+                  },
+                  "label": {
+                    "S": "use FASTQs as input"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "edgeId": {
+                    "S": "e-tn-gpl"
+                  },
+                  "source": {
+                    "S": "wgs-tumor-normal"
+                  },
+                  "target": {
+                    "S": "gpl"
+                  },
+                  "edgeType": {
+                    "S": "input_dependency"
+                  },
+                  "label": {
+                    "S": "use T/N as input"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "edgeId": {
+                    "S": "e-tn-sash"
+                  },
+                  "source": {
+                    "S": "wgs-tumor-normal"
+                  },
+                  "target": {
+                    "S": "sash"
+                  },
+                  "edgeType": {
+                    "S": "input_dependency"
+                  },
+                  "label": {
+                    "S": "use T/N as input"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "edgeId": {
+                    "S": "e-star-rnasum"
+                  },
+                  "source": {
+                    "S": "star-alignment"
+                  },
+                  "target": {
+                    "S": "rnasum"
+                  },
+                  "edgeType": {
+                    "S": "input_dependency"
+                  },
+                  "label": {
+                    "S": "use transcriptome bam as input"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "PK": {
+            "S": "CATALOG_V1"
+          },
+          "SK": {
+            "S": "MAP#emergency-reroute"
+          },
+          "GSI1PK": {
+            "S": "STATUS#draft"
+          },
+          "GSI1SK": {
+            "S": "UPDATED#2023-10-12T09:15:00Z#emergency-reroute"
+          },
+          "entityType": {
+            "S": "MAP"
+          },
+          "mapId": {
+            "S": "emergency-reroute"
+          },
+          "name": {
+            "S": "Emergency Reroute Protocol"
+          },
+          "description": {
+            "S": "Contingency workflow for instrument downtime, mapping automated failover paths between sequencing centres."
+          },
+          "status": {
+            "S": "draft"
+          },
+          "createdBy": {
+            "S": "Sarah Jenkins"
+          },
+          "createdAt": {
+            "S": "2023-08-20T14:30:00Z"
+          },
+          "updatedBy": {
+            "S": "Sarah Jenkins"
+          },
+          "updatedAt": {
+            "S": "2023-10-12T09:15:00Z"
+          },
+          "tags": {
+            "M": {
+              "environment": {
+                "S": "staging"
+              },
+              "team": {
+                "S": "operations"
+              }
+            }
+          },
+          "nodeCount": {
+            "N": "0"
+          },
+          "edgeCount": {
+            "N": "0"
+          },
+          "nodes": {
+            "L": []
+          },
+          "groups": {
+            "L": []
+          },
+          "edges": {
+            "L": []
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "PK": {
+            "S": "CATALOG_V1"
+          },
+          "SK": {
+            "S": "MAP#sample-intake-v3"
+          },
+          "GSI1PK": {
+            "S": "STATUS#archived"
+          },
+          "GSI1SK": {
+            "S": "UPDATED#2023-05-30T14:00:00Z#sample-intake-v3"
+          },
+          "entityType": {
+            "S": "MAP"
+          },
+          "mapId": {
+            "S": "sample-intake-v3"
+          },
+          "name": {
+            "S": "Sample Intake V3"
+          },
+          "description": {
+            "S": "Legacy intake diagram for clinical trials cohort B. Kept for historical compliance and audit trail purposes."
+          },
+          "status": {
+            "S": "archived"
+          },
+          "createdBy": {
+            "S": "Marcus Vane"
+          },
+          "createdAt": {
+            "S": "2022-11-01T10:00:00Z"
+          },
+          "updatedBy": {
+            "S": "Marcus Vane"
+          },
+          "updatedAt": {
+            "S": "2023-05-30T14:00:00Z"
+          },
+          "tags": {
+            "M": {
+              "environment": {
+                "S": "production"
+              },
+              "team": {
+                "S": "clinical"
+              }
+            }
+          },
+          "nodeCount": {
+            "N": "0"
+          },
+          "edgeCount": {
+            "N": "0"
+          },
+          "nodes": {
+            "L": []
+          },
+          "groups": {
+            "L": []
+          },
+          "edges": {
+            "L": []
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "PK": {
+            "S": "CATALOG_V1"
+          },
+          "SK": {
+            "S": "MAP#qc-automator-beta"
+          },
+          "GSI1PK": {
+            "S": "STATUS#active"
+          },
+          "GSI1SK": {
+            "S": "UPDATED#2026-04-10T10:00:00Z#qc-automator-beta"
+          },
+          "entityType": {
+            "S": "MAP"
+          },
+          "mapId": {
+            "S": "qc-automator-beta"
+          },
+          "name": {
+            "S": "QC Automator Beta"
+          },
+          "description": {
+            "S": "New automated quality gate workflow utilising machine learning models for real-time sample QC assessment."
+          },
+          "status": {
+            "S": "active"
+          },
+          "createdBy": {
+            "S": "Admin User"
+          },
+          "createdAt": {
+            "S": "2025-06-01T08:00:00Z"
+          },
+          "updatedBy": {
+            "S": "Admin User"
+          },
+          "updatedAt": {
+            "S": "2026-04-10T10:00:00Z"
+          },
+          "tags": {
+            "M": {
+              "environment": {
+                "S": "dev"
+              },
+              "team": {
+                "S": "ml-ops"
+              }
+            }
+          },
+          "nodeCount": {
+            "N": "0"
+          },
+          "edgeCount": {
+            "N": "0"
+          },
+          "nodes": {
+            "L": []
+          },
+          "groups": {
+            "L": []
+          },
+          "edges": {
+            "L": []
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "PK": {
+            "S": "CATALOG_V1"
+          },
+          "SK": {
+            "S": "MAP#wts-pipeline"
+          },
+          "GSI1PK": {
+            "S": "STATUS#active"
+          },
+          "GSI1SK": {
+            "S": "UPDATED#2026-03-28T11:45:00Z#wts-pipeline"
+          },
+          "entityType": {
+            "S": "MAP"
+          },
+          "mapId": {
+            "S": "wts-pipeline"
+          },
+          "name": {
+            "S": "Whole Transcriptome Pipeline"
+          },
+          "description": {
+            "S": "RNA sequencing analysis pipeline for gene expression profiling and fusion detection across tumour samples."
+          },
+          "status": {
+            "S": "active"
+          },
+          "createdBy": {
+            "S": "Dr. Aris Thorne"
+          },
+          "createdAt": {
+            "S": "2024-09-12T11:00:00Z"
+          },
+          "updatedBy": {
+            "S": "Sarah Jenkins"
+          },
+          "updatedAt": {
+            "S": "2026-03-28T11:45:00Z"
+          },
+          "tags": {
+            "M": {
+              "environment": {
+                "S": "production"
+              },
+              "team": {
+                "S": "umccr"
+              }
+            }
+          },
+          "nodeCount": {
+            "N": "0"
+          },
+          "edgeCount": {
+            "N": "0"
+          },
+          "nodes": {
+            "L": []
+          },
+          "groups": {
+            "L": []
+          },
+          "edges": {
+            "L": []
+          }
+        }
+      }
+    }
+  ]
+}
