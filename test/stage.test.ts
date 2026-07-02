@@ -210,9 +210,20 @@ describe('system-catalog-stateless-stack', () => {
       RouteKey: 'GET /health',
       AuthorizationType: 'NONE',
     });
-    template.hasResourceProperties('AWS::ApiGatewayV2::Route', {
-      RouteKey: 'ANY /api/{proxy+}',
-    });
+
+    // Register API proxy routes per concrete verb (not ANY) so preflight
+    // OPTIONS stays unrouted and is handled by API Gateway CORS, not JWT auth.
+    for (const method of ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']) {
+      template.hasResourceProperties('AWS::ApiGatewayV2::Route', {
+        RouteKey: `${method} /api/{proxy+}`,
+      });
+    }
+
+    const routeKeys = Object.values(template.findResources('AWS::ApiGatewayV2::Route')).map(
+      (route) => route.Properties.RouteKey
+    );
+    expect(routeKeys).not.toContain('ANY /api/{proxy+}');
+    expect(routeKeys).not.toContain('OPTIONS /api/{proxy+}');
   });
 
   test('grants the Lambda DynamoDB access to the table and indexes', () => {
