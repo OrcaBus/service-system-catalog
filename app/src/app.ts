@@ -24,6 +24,9 @@ function createCorsOriginResolver(allowedOrigins: readonly string[]) {
 export function createApp(dependencies: AppDependencies): Hono {
   const app = new Hono();
 
+  // Keep app-level CORS enabled in all environments.
+  // In API Gateway deployments, gateway preflight handling takes precedence.
+  // In standalone local development, Hono serves CORS for frontend clients.
   app.use(
     '/api/*',
     cors({

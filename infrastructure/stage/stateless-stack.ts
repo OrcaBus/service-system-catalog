@@ -161,10 +161,26 @@ export class SystemCatalogStatelessStack extends GitStack {
       routeKey: HttpRouteKey.with('/schema/{proxy+}', HttpMethod.GET),
     });
 
-    new HttpRoute(this, 'ApiProxyHttpRoute', {
-      httpApi,
-      integration: apiIntegration,
-      routeKey: HttpRouteKey.with('/api/{proxy+}', HttpMethod.ANY),
-    });
+    // The HTTP API applies a default Cognito JWT authorizer to routed methods.
+    // If this proxy were `ANY`, preflight `OPTIONS` would be routed and hit the
+    // authorizer. Browsers do not send Authorization on preflight, so that
+    // request would fail before the actual API call.
+    // Register concrete methods only so `OPTIONS` stays unrouted and is handled
+    // by API Gateway `corsPreflight`, while the real API verbs stay protected.
+    const protectedMethods = [
+      HttpMethod.GET,
+      HttpMethod.POST,
+      HttpMethod.PUT,
+      HttpMethod.PATCH,
+      HttpMethod.DELETE,
+    ];
+
+    for (const method of protectedMethods) {
+      new HttpRoute(this, `ApiProxy${method}HttpRoute`, {
+        httpApi,
+        integration: apiIntegration,
+        routeKey: HttpRouteKey.with('/api/{proxy+}', method),
+      });
+    }
   }
 }

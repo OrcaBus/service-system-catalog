@@ -77,6 +77,25 @@ Stage configuration is in `infrastructure/stage/config.ts`. Table names remain d
 - `SystemCatalogTable-GAMMA`
 - `SystemCatalogTable-PROD`
 
+Pipeline stack names:
+
+```bash
+pnpm cdk-stateless ls
+
+OrcaBusSystemCatalogStatelessStack
+OrcaBusSystemCatalogStatelessStack/DeploymentPipeline/OrcaBusBeta/SystemCatalogStatelessStack (OrcaBusBeta-SystemCatalogStatelessStack)
+OrcaBusSystemCatalogStatelessStack/DeploymentPipeline/OrcaBusGamma/SystemCatalogStatelessStack (OrcaBusGamma-SystemCatalogStatelessStack)
+OrcaBusSystemCatalogStatelessStack/DeploymentPipeline/OrcaBusProd/SystemCatalogStatelessStack (OrcaBusProd-SystemCatalogStatelessStack)
+```
+
+Deploy to Beta (DEV):
+
+```bash
+pnpm cdk-stateless synth -e OrcaBusSystemCatalogStatelessStack/DeploymentPipeline/OrcaBusBeta/SystemCatalogStatelessStack
+pnpm cdk-stateless diff -e OrcaBusSystemCatalogStatelessStack/DeploymentPipeline/OrcaBusBeta/SystemCatalogStatelessStack
+pnpm cdk-stateless deploy -e OrcaBusSystemCatalogStatelessStack/DeploymentPipeline/OrcaBusBeta/SystemCatalogStatelessStack
+```
+
 ## OpenAPI
 
 - Spec: `app/schema/openapi.yaml`
